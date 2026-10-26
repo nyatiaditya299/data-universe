@@ -17,6 +17,8 @@ Prepared for the **AI in Finance Case Competition** beta prototype. The app uses
 
 These `.md` files are web-extracted text snapshots with source URLs in their headers, not original Fisher HTML files. Fisher's site describes the content as the opinions/viewpoints of its editorial staff; do not attribute it to a private investment committee or present it as proof of actual trades.[1][2][3]
 
+**Correction (26 Oct 2026).** On 25 Oct the three commentary files, the top-down process file and the disclosure-page file did not contain what their names say: two held SEC 13F holdings text, one an EDGAR filing page, and two only site menus. They were replaced on 26 Oct with the text of the real public pages, read in a browser, each with a header giving the title, URL, publication date and capture date. Tables, charts and bullet lists on the pages are not captured. The Data Universe dashboard loads these seven Fisher documents (the three articles, the process page, the disclosure page, Form CRS and Form ADV Part 2A) as its focus-company dataset.
+
 ### Public event documents for the case prompts
 - `Fisher_Investments/2020-cares-act-congress.md` — Congress.gov record for the CARES Act.[12]
 - `Fisher_Investments/2022-09-13-bls-cpi-release.md` — archived BLS August 2022 CPI release.[13]
