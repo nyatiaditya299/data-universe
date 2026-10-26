@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Data Universe">
+  <defs>
+    <linearGradient id="du-g" x1="6" y1="8" x2="58" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA"/><stop offset=".55" stop-color="#F472B6"/><stop offset="1" stop-color="#2DD4BF"/>
+    </linearGradient>
+    <radialGradient id="du-p" cx="38%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#2E3470"/><stop offset="1" stop-color="#090C1E"/>
+    </radialGradient>
+    <clipPath id="du-front"><rect x="0" y="32" width="64" height="32"/></clipPath>
+  </defs>
+  <!-- distant stars -->
+  <circle cx="9" cy="15" r="1" fill="#C4B5FD"/><circle cx="55" cy="50" r="1.1" fill="#99F6E4"/><circle cx="52" cy="10" r=".8" fill="#F9A8D4"/><circle cx="12" cy="52" r=".8" fill="#A5B4FC"/>
+  <!-- orbit ring, back half -->
+  <g transform="rotate(-24 32 32)"><ellipse cx="32" cy="32" rx="29" ry="10" fill="none" stroke="url(#du-g)" stroke-width="2" opacity=".8"/></g>
+  <!-- the universe -->
+  <circle cx="32" cy="32" r="21" fill="url(#du-p)" stroke="url(#du-g)" stroke-width="2"/>
+  <!-- a data series drawn as a constellation -->
+  <polyline points="19,39 27,31.5 34,36 45,24" fill="none" stroke="#FFFFFF" stroke-opacity=".92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="19" cy="39" r="2.3" fill="#C4B5FD"/><circle cx="27" cy="31.5" r="2.3" fill="#F9A8D4"/><circle cx="34" cy="36" r="2.3" fill="#99F6E4"/><circle cx="45" cy="24" r="3.2" fill="#FFFFFF"/>
+  <!-- orbit ring, front half (passes in front of the planet) -->
+  <g transform="rotate(-24 32 32)"><ellipse cx="32" cy="32" rx="29" ry="10" fill="none" stroke="url(#du-g)" stroke-width="2.2" clip-path="url(#du-front)"/></g>
+</svg>

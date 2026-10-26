@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universe test runner</title>
+<style>body{font:14px/1.5 Consolas,'Courier New',monospace;margin:24px;background:#fffefa;color:#18241f}.pass{color:#2f6b4c}.fail{color:#8a473e;font-weight:700}h1{font:22px Georgia,serif}</style>
+</head>
+<body>
+<h1>Universe test runner</h1>
+<p>Runs the node:test file in this browser (no Node install needed). Start serve.ps1, then open this page.</p>
+<pre id="out">Running…</pre>
+<script type="module">
+// Minimal stand-ins for node:test and node:assert/strict, loaded in place of the node: imports.
+const shim = `
+export default function test(name, fn) { (globalThis.__tests ||= []).push({ name, fn }); }
+const fmt = (v) => JSON.stringify(v);
+function deepEqual(a, b) { if (fmt(a) !== fmt(b)) throw new Error('expected ' + fmt(b) + ', got ' + fmt(a)); }
+export const assert = {
+  equal(a, b) { if (a !== b) throw new Error('expected ' + fmt(b) + ', got ' + fmt(a)); },
+  notEqual(a, b) { if (a === b) throw new Error('did not expect ' + fmt(b)); },
+  deepEqual, ok(v, m) { if (!v) throw new Error(m || 'expected truthy value'); }
+};`;
+const shimUrl = URL.createObjectURL(new Blob([shim], { type: 'text/javascript' }));
+const assertUrl = URL.createObjectURL(new Blob([`import { assert } from '${shimUrl}'; export default assert;`], { type: 'text/javascript' }));
+const files = ['universe-core.test.mjs'];
+const out = document.querySelector('#out');
+let lines = [], pass = 0, fail = 0;
+for (const f of files) {
+  const src = (await (await fetch(f, { cache: 'no-store' })).text())
+    .replace(/from 'node:test'/, `from '${shimUrl}'`)
+    .replace(/from 'node:assert\/strict'/, `from '${assertUrl}'`)
+    .replace(/from '\.\/([^']+)'/g, (_, p) => `from '${new URL(p, location.href).href}'`);
+  globalThis.__tests = [];
+  await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+  lines.push(`# ${f}`);
+  for (const t of globalThis.__tests) {
+    try { await t.fn(); pass++; lines.push(`<span class="pass">✔ ${t.name}</span>`); }
+    catch (e) { fail++; lines.push(`<span class="fail">✘ ${t.name}\n    ${e.message}</span>`); }
+  }
+}
+lines.push(`\n${pass} passed, ${fail} failed`);
+out.innerHTML = lines.join('\n');
+document.title = fail ? `FAIL (${fail})` : `PASS (${pass})`;
+</script>
+</body>
+</html>

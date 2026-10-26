@@ -1,0 +1,245 @@
+{
+  "version": 1,
+  "note": "Public datasets the dashboard can download into Universe/data/. serve.ps1 downloads them; universe-ui.mjs parses them into the searchable universe. Edit this file to add series, managers, or years.",
+  "datasets": [
+    {
+      "id": "fred-rates",
+      "group": "US rates & credit",
+      "name": "FRED: US interest rates and yield curve",
+      "publisher": "Federal Reserve Bank of St. Louis (FRED)",
+      "homepage": "https://fred.stlouisfed.org/",
+      "license": "Public data; cite FRED and the original source.",
+      "description": "Fed funds rate, 2- and 10-year Treasury yields, the 10y-2y curve, 30-year mortgage rate and the US high-yield spread.",
+      "type": "fred",
+      "series": [
+        { "id": "FEDFUNDS", "title": "Federal funds effective rate", "units": "%", "freq": "M" },
+        { "id": "DGS2", "title": "2-year Treasury yield", "units": "%", "freq": "D" },
+        { "id": "DGS10", "title": "10-year Treasury yield", "units": "%", "freq": "D" },
+        { "id": "T10Y2Y", "title": "10-year minus 2-year Treasury spread", "units": "pct pts", "freq": "D" },
+        { "id": "MORTGAGE30US", "title": "30-year fixed mortgage rate", "units": "%", "freq": "W" },
+        { "id": "BAMLH0A0HYM2", "title": "US high-yield bond spread (ICE BofA OAS)", "units": "%", "freq": "D" }
+      ]
+    },
+    {
+      "id": "fred-inflation-labor",
+      "group": "US inflation & jobs",
+      "name": "FRED: US inflation, jobs and recessions",
+      "publisher": "Federal Reserve Bank of St. Louis (FRED)",
+      "homepage": "https://fred.stlouisfed.org/",
+      "license": "Public data; cite FRED and the original source (BLS, BEA, NBER).",
+      "description": "CPI and core CPI, core PCE prices, unemployment rate, nonfarm payrolls and the NBER recession indicator.",
+      "type": "fred",
+      "series": [
+        { "id": "CPIAUCSL", "title": "US CPI, all items (index)", "units": "index 1982-84=100", "freq": "M" },
+        { "id": "CPILFESL", "title": "US core CPI, ex food and energy (index)", "units": "index 1982-84=100", "freq": "M" },
+        { "id": "PCEPILFE", "title": "US core PCE price index", "units": "index 2017=100", "freq": "M" },
+        { "id": "UNRATE", "title": "US unemployment rate", "units": "%", "freq": "M" },
+        { "id": "PAYEMS", "title": "US nonfarm payrolls", "units": "thousands of jobs", "freq": "M" },
+        { "id": "USREC", "title": "NBER US recession indicator (1 = recession)", "units": "0/1", "freq": "M" }
+      ]
+    },
+    {
+      "id": "fred-growth",
+      "group": "US growth & activity",
+      "name": "FRED: US growth, consumers and housing",
+      "publisher": "Federal Reserve Bank of St. Louis (FRED)",
+      "homepage": "https://fred.stlouisfed.org/",
+      "license": "Public data; cite FRED and the original source.",
+      "description": "Real GDP, industrial production, consumer sentiment, retail sales and housing starts.",
+      "type": "fred",
+      "series": [
+        { "id": "GDPC1", "title": "US real GDP", "units": "billions of chained 2017 $", "freq": "Q" },
+        { "id": "INDPRO", "title": "US industrial production index", "units": "index 2017=100", "freq": "M" },
+        { "id": "UMCSENT", "title": "University of Michigan consumer sentiment", "units": "index", "freq": "M" },
+        { "id": "RSAFS", "title": "US retail sales", "units": "millions of $", "freq": "M" },
+        { "id": "HOUST", "title": "US housing starts", "units": "thousands of units, annual rate", "freq": "M" }
+      ]
+    },
+    {
+      "id": "fred-markets",
+      "group": "Markets, FX & commodities",
+      "name": "FRED: equity indexes, dollar, euro and oil",
+      "publisher": "Federal Reserve Bank of St. Louis (FRED)",
+      "homepage": "https://fred.stlouisfed.org/",
+      "license": "Public data; S&P 500 history on FRED covers only about the last 10 years.",
+      "description": "S&P 500 and Nasdaq Composite levels, the broad trade-weighted dollar, USD per euro and WTI crude oil.",
+      "type": "fred",
+      "series": [
+        { "id": "SP500", "title": "S&P 500 index", "units": "index", "freq": "D" },
+        { "id": "NASDAQCOM", "title": "Nasdaq Composite index", "units": "index", "freq": "D" },
+        { "id": "DTWEXBGS", "title": "Broad trade-weighted US dollar index", "units": "index Jan 2006=100", "freq": "D" },
+        { "id": "DEXUSEU", "title": "US dollars per euro", "units": "USD per EUR", "freq": "D" },
+        { "id": "DCOILWTICO", "title": "WTI crude oil price", "units": "$ per barrel", "freq": "D" }
+      ]
+    },
+    {
+      "id": "fred-india",
+      "group": "India",
+      "name": "FRED: India rupee, inflation and rates",
+      "publisher": "Federal Reserve Bank of St. Louis (FRED), from the Fed, OECD and IMF",
+      "homepage": "https://fred.stlouisfed.org/",
+      "license": "Public data; cite FRED and the original source.",
+      "description": "Rupees per US dollar, India consumer prices and India short-term interest rates.",
+      "type": "fred",
+      "series": [
+        { "id": "DEXINUS", "title": "Indian rupees per US dollar", "units": "INR per USD", "freq": "D" },
+        { "id": "INDCPIALLMINMEI", "title": "India consumer price index (OECD)", "units": "index 2015=100", "freq": "M" },
+        { "id": "IRSTCI01INM156N", "title": "India call money / interbank rate", "units": "%", "freq": "M" },
+        { "id": "INTDSRINM193N", "title": "India central bank discount rate", "units": "%", "freq": "M" }
+      ]
+    },
+    {
+      "id": "cboe-vix",
+      "group": "Markets, FX & commodities",
+      "name": "Cboe VIX volatility index history",
+      "publisher": "Cboe Global Markets",
+      "homepage": "https://www.cboe.com/tradable_products/vix/vix_historical_data/",
+      "license": "Free download from Cboe; check Cboe terms before redistributing.",
+      "description": "Daily open, high, low and close of the VIX since 1990, the market's main fear gauge.",
+      "type": "files",
+      "parse": "cboe-vix",
+      "files": [ { "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv", "name": "VIX_History.csv" } ]
+    },
+    {
+      "id": "ff-factors",
+      "group": "Factors & valuation",
+      "name": "Fama-French factors and momentum",
+      "publisher": "Kenneth R. French Data Library (Dartmouth)",
+      "homepage": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html",
+      "license": "Free for research; cite the Kenneth French Data Library.",
+      "description": "Monthly US market excess return, size (SMB), value (HML), risk-free rate and momentum factor returns since 1926.",
+      "type": "files",
+      "parse": "ff-factors",
+      "files": [
+        { "url": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_CSV.zip", "name": "F-F_Research_Data_Factors_CSV.zip" },
+        { "url": "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Momentum_Factor_CSV.zip", "name": "F-F_Momentum_Factor_CSV.zip" }
+      ]
+    },
+    {
+      "id": "shiller",
+      "group": "Factors & valuation",
+      "name": "Shiller US stock market data (CAPE)",
+      "publisher": "Robert J. Shiller, Yale University",
+      "homepage": "http://www.econ.yale.edu/~shiller/data.htm",
+      "license": "Free for research; cite Robert Shiller.",
+      "description": "Monthly S&P composite price, dividends, earnings, CPI, 10-year yield and the cyclically adjusted P/E (CAPE) since 1871.",
+      "type": "files",
+      "parse": "shiller",
+      "files": [ { "url": "http://www.econ.yale.edu/~shiller/data/ie_data.xls", "name": "ie_data.xls" } ]
+    },
+    {
+      "id": "spf",
+      "group": "Forecasts vs actuals",
+      "name": "Survey of Professional Forecasters (median forecasts)",
+      "publisher": "Federal Reserve Bank of Philadelphia",
+      "homepage": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/survey-of-professional-forecasters",
+      "license": "Public data; cite the Philadelphia Fed.",
+      "description": "Quarterly median forecasts since 1968 for unemployment, inflation, T-bill and T-bond yields. Compare what forecasters expected with what happened.",
+      "type": "files",
+      "parse": "spf",
+      "sheets": {
+        "UNEMP": "SPF median forecast: US unemployment rate",
+        "CPI": "SPF median forecast: US CPI inflation",
+        "CORECPI": "SPF median forecast: US core CPI inflation",
+        "TBILL": "SPF median forecast: 3-month T-bill rate",
+        "TBOND": "SPF median forecast: 10-year Treasury yield"
+      },
+      "files": [ { "url": "https://www.philadelphiafed.org/-/media/frbp/assets/surveys-and-data/survey-of-professional-forecasters/historical-data/medianlevel.xlsx", "name": "medianLevel.xlsx" } ]
+    },
+    {
+      "id": "fomc-statements",
+      "group": "Central bank text",
+      "name": "FOMC policy statements",
+      "publisher": "Board of Governors of the Federal Reserve System",
+      "homepage": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "license": "US government work, public domain.",
+      "description": "Full text of each Federal Open Market Committee statement linked from the Fed's meeting calendar (about the last five years).",
+      "type": "fomc",
+      "page": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+      "maxItems": 60
+    },
+    {
+      "id": "berkshire-letters",
+      "group": "Investor letters",
+      "name": "Berkshire Hathaway shareholder letters",
+      "publisher": "Berkshire Hathaway Inc.",
+      "homepage": "https://www.berkshirehathaway.com/letters/letters.html",
+      "license": "Freely published by Berkshire; for internal research use, not redistribution.",
+      "description": "Warren Buffett's annual letters, 2000 onward: a long, dated record of a senior investor's market views and decisions.",
+      "type": "files",
+      "parse": "berkshire",
+      "files": [
+        { "url": "https://www.berkshirehathaway.com/letters/2000pdf.pdf", "name": "2000.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2001pdf.pdf", "name": "2001.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2002pdf.pdf", "name": "2002.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2003ltr.pdf", "name": "2003.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2004ltr.pdf", "name": "2004.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2005ltr.pdf", "name": "2005.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2006ltr.pdf", "name": "2006.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2007ltr.pdf", "name": "2007.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2008ltr.pdf", "name": "2008.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2009ltr.pdf", "name": "2009.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2010ltr.pdf", "name": "2010.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2011ltr.pdf", "name": "2011.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2012ltr.pdf", "name": "2012.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2013ltr.pdf", "name": "2013.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2014ltr.pdf", "name": "2014.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2015ltr.pdf", "name": "2015.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2016ltr.pdf", "name": "2016.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2017ltr.pdf", "name": "2017.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2018ltr.pdf", "name": "2018.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2019ltr.pdf", "name": "2019.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2020ltr.pdf", "name": "2020.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2021ltr.pdf", "name": "2021.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2022ltr.pdf", "name": "2022.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2023ltr.pdf", "name": "2023.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2024ltr.pdf", "name": "2024.pdf" },
+        { "url": "https://www.berkshirehathaway.com/letters/2025ltr.pdf", "name": "2025.pdf" }
+      ]
+    },
+    {
+      "id": "worldbank-macro",
+      "group": "Global macro",
+      "name": "World Bank: growth, inflation, jobs and external balance",
+      "publisher": "World Bank Open Data",
+      "homepage": "https://data.worldbank.org/",
+      "license": "CC BY 4.0; cite the World Bank.",
+      "description": "Annual GDP growth, CPI inflation, unemployment and current account balance for India, US, China, Japan, Germany, UK, Brazil and the euro area since 1990.",
+      "type": "worldbank",
+      "countries": "IND;USA;CHN;JPN;DEU;GBR;BRA;EMU",
+      "years": "1990:2026",
+      "indicators": [
+        { "id": "NY.GDP.MKTP.KD.ZG", "title": "Real GDP growth", "units": "annual %" },
+        { "id": "FP.CPI.TOTL.ZG", "title": "CPI inflation", "units": "annual %" },
+        { "id": "SL.UEM.TOTL.ZS", "title": "Unemployment rate", "units": "% of labor force" },
+        { "id": "BN.CAB.XOKA.GD.ZS", "title": "Current account balance", "units": "% of GDP" }
+      ]
+    },
+    {
+      "id": "sec-13f",
+      "group": "Institutional holdings",
+      "name": "SEC 13F holdings: Fisher Investments and Berkshire Hathaway",
+      "publisher": "US Securities and Exchange Commission (EDGAR)",
+      "homepage": "https://www.sec.gov/edgar/search/",
+      "license": "US government data, public domain. The SEC requires a User-Agent with your name and email.",
+      "description": "The last four quarterly 13F-HR holdings reports for each manager, with quarter-over-quarter buys, sells, new positions and exits.",
+      "type": "sec13f",
+      "quarters": 4,
+      "managers": [
+        { "cik": "850529", "name": "Fisher Investments" },
+        { "cik": "1067983", "name": "Berkshire Hathaway" }
+      ]
+    },
+    {
+      "id": "my-docs",
+      "group": "Your documents",
+      "name": "Your own documents (Universe/my-docs)",
+      "publisher": "You",
+      "homepage": "",
+      "license": "Whatever applies to the files you add. Keep client data out unless it is anonymised.",
+      "description": "Drop .pdf, .txt, .md, .html or .csv files into Universe/my-docs (for example bank outlooks you saved, or anonymised house-view notes), then click Scan. Start a file name with a date like 2024-03-15 to date it.",
+      "type": "local",
+      "folder": "my-docs"
+    }
+  ]
+}
