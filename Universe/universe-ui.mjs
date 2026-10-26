@@ -21,7 +21,9 @@ const MAX_AGENT_TURNS = 8;
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const kb = (n) => (n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`);
-const state = { catalog: null, status: null, docs: [], series: [], index: null, model: null, params: { ...DEFAULT_PARAMS }, stale: false, busy: false, abort: null, last: null, concl: { status: 'idle' }, indexBytes: 0, evalProg: null, expanded: new Set(), asked: false, trace: null, treeShown: new Set() };
+// The GitHub Pages copy has no local server: it reads this published snapshot (built index, no Berkshire letters) and stays read-only.
+const HOSTED = 'hosted/';
+const state = { hosted: false, catalog: null, status: null, docs: [], series: [], index: null, model: null, params: { ...DEFAULT_PARAMS }, stale: false, busy: false, abort: null, last: null, concl: { status: 'idle' }, indexBytes: 0, evalProg: null, expanded: new Set(), asked: false, trace: null, treeShown: new Set() };
 let nebula = null;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -170,13 +172,14 @@ async function buildUniverse() {
 }
 
 async function loadUniverse() {
-  const [docsText, seriesText] = await Promise.all([getText('data/_index/docs.json'), getText('data/_index/series.json')]);
+  const dir = state.hosted ? HOSTED : 'data/_index/';
+  const [docsText, seriesText] = await Promise.all([getText(dir + 'docs.json'), getText(dir + 'series.json')]);
   const docs = JSON.parse(docsText), series = JSON.parse(seriesText);
   state.indexBytes = docsText.length + seriesText.length;
   state.docs = docs; state.series = series;
   state.index = buildUniverseIndex(docs);
   if (state.status.index['model.json']) {
-    state.model = JSON.parse(await getText('data/_index/model.json'));
+    state.model = JSON.parse(await getText(dir + 'model.json'));
     state.params = { ...DEFAULT_PARAMS, ...state.model.params };
   }
 }
@@ -199,7 +202,13 @@ async function runTraining() {
 
 // ---------------------------------------------------------------- rendering: datasets and settings
 
-async function refreshStatus() { state.status = (await api('/api/status')).json; }
+async function refreshStatus() {
+  // "?hosted" previews the online copy on the local server.
+  const r = new URLSearchParams(location.search).has('hosted') ? null : await api('/api/status').catch(() => null);
+  if (r?.ok && r.json.settings) { state.status = r.json; return; }
+  state.hosted = true;
+  state.status = JSON.parse(await getText(HOSTED + 'status.json'));
+}
 
 function datasetDocCount(id) { return state.docs.filter((d) => d.dataset === id).length; }
 
@@ -219,26 +228,26 @@ function renderDatasets() {
     const failed = (m?.files || []).filter((f) => !f.ok);
     const n = datasetDocCount(ds.id);
     const blocked = ds.type === 'sec13f' && !ua;
-    const status = !m ? '<span class="pill">Not downloaded</span>'
+    const status = !m ? `<span class="pill">${state.hosted ? 'Local version only' : 'Not downloaded'}</span>`
       : m.okCount ? `<span class="pill ok">Downloaded ${esc(m.downloadedAt.replace('T', ' ').slice(0, 16))}</span> <span class="muted">${m.okCount} file${m.okCount > 1 ? 's' : ''} · ${kb(bytes)}${n ? ` · ${n.toLocaleString()} docs in universe` : ''}</span>`
       : '<span class="pill warn">Nothing downloaded</span>';
     const items = ds.series || ds.indicators || ds.managers || ds.include?.map((i) => ({ id: i.date || 'undated', title: i.title }));
     return `<article class="ds" data-id="${ds.id}">
       <div class="ds-top"><div><strong>${esc(ds.name)}</strong><div class="muted">${esc(ds.publisher)}${ds.homepage ? ` · <a href="${esc(ds.homepage)}" target="_blank" rel="noopener">source</a>` : ''}</div></div>
-      <button class="secondary small" data-download="${ds.id}" ${state.busy || blocked ? 'disabled' : ''}>${ds.type === 'local' ? (ds.include ? (m ? 'Reload' : 'Load') : 'Scan folder') : m ? 'Update' : 'Download'}</button></div>
+      <button class="secondary small" data-download="${ds.id}" ${state.busy || blocked || state.hosted ? 'disabled' : ''}>${ds.type === 'local' ? (ds.include ? (m ? 'Reload' : 'Load') : 'Scan folder') : m ? 'Update' : 'Download'}</button></div>
       <p>${esc(ds.description)}</p>
       ${items ? `<p class="series">${items.map((s) => `<span title="${esc(s.title || s.name)}">${esc(s.id || s.cik)}${s.title ? '' : ` ${esc(s.name)}`}</span>`).join('')}</p>` : ''}
       <div class="ds-status">${status}</div>
       ${blocked ? '<p class="note">The SEC needs a User-Agent with your name and email first (Settings).</p>' : ''}
       ${m?.error ? `<p class="note">${esc(m.error)}</p>` : ''}
       ${failed.length ? `<p class="note">${failed.length} file${failed.length > 1 ? 's' : ''} failed: ${failed.slice(0, 4).map((f) => `${esc(f.name)} (HTTP ${esc(f.status || '?')})`).join(', ')}</p>` : ''}
-      ${m?.okCount ? `<details><summary>Files on your computer</summary><ul class="files">${m.files.filter((f) => f.ok).map((f) => `<li><a href="${esc(f.path || dataPath(ds, f.name))}" target="_blank">${esc(f.name)}</a> <span class="muted">${kb(f.bytes)}</span></li>`).join('')}</ul><p class="muted small-text">Folder: Universe\\data\\${esc(ds.id)}</p></details>` : ''}
+      ${m?.okCount && !state.hosted ? `<details><summary>Files on your computer</summary><ul class="files">${m.files.filter((f) => f.ok).map((f) => `<li><a href="${esc(f.path || dataPath(ds, f.name))}" target="_blank">${esc(f.name)}</a> <span class="muted">${kb(f.bytes)}</span></li>`).join('')}</ul><p class="muted small-text">Folder: Universe\\data\\${esc(ds.id)}</p></details>` : ''}
       <p class="muted small-text">${esc(ds.license)}</p>
     </article>`;
   }).join('')}</section>`).join('') : '<p class="muted">No dataset matches that filter.</p>';
   const downloaded = state.catalog.datasets.filter((d) => state.status.datasets[d.id]?.okCount).length;
   $('#catalogSummary').textContent = `${downloaded} / ${state.catalog.datasets.length} datasets`;
-  $('#downloadAll').disabled = state.busy;
+  $('#downloadAll').disabled = state.busy || state.hosted;
 }
 
 async function download(id) {
@@ -310,7 +319,7 @@ async function loadModels() {
 /** Which engine writes the conclusion: an open model, Claude, or none (ranked search only). */
 function currentEngine() {
   const s = state.status.settings;
-  if (!$('#useAgent').checked) return 'search';
+  if (state.hosted || !$('#useAgent').checked) return 'search';
   if (s.engine === 'claude' && s.apiKeySet) return 'claude';
   if (llmReady(s)) return 'open';
   return s.apiKeySet ? 'claude' : 'search';
@@ -392,8 +401,8 @@ function resultsHtml(m) {
 function renderTrain() {
   const has = !!state.index, m = state.model, ev = state.evalProg;
   const downloaded = state.catalog.datasets.some((d) => okFiles(d).length);
-  $('#buildBtn').disabled = state.busy || !downloaded;
-  $('#trainBtn').disabled = state.busy || !has;
+  $('#buildBtn').disabled = state.busy || !downloaded || state.hosted;
+  $('#trainBtn').disabled = state.busy || !has || state.hosted;
   $('#staleNote').classList.toggle('hidden', !(state.stale && has));
   document.querySelectorAll('.combos-n').forEach((e) => { e.textContent = combosN; });
   // Header status
@@ -434,7 +443,7 @@ function renderNav() {
     b.setAttribute('aria-label', `${names[b.dataset.tab]}${d ? ', complete' : ''}`);
   });
   const onDisk = state.catalog.datasets.filter((d) => okFiles(d).length).length;
-  $('#navSub1').textContent = `${onDisk} / ${state.catalog.datasets.length} on disk`;
+  $('#navSub1').textContent = `${onDisk} / ${state.catalog.datasets.length} ${state.hosted ? 'online' : 'on disk'}`;
   $('#navSub2').textContent = !state.index ? 'Not built' : state.stale ? 'Rebuild needed' : state.model ? 'Indexed & tuned' : 'Indexed · untrained';
   $('#navSub3').textContent = state.index ? 'Grounded Q&A' : 'Build first';
 }
@@ -461,7 +470,9 @@ function renderAskMode() {
   const s = state.status.settings, engine = currentEngine();
   $('#modeBadge').textContent = engine === 'open' ? `Open model · ${llmLabel(s)}` : engine === 'claude' ? `Claude agent · ${s.model}` : 'Ranked search only';
   $('#modeBadge').dataset.mode = engine === 'search' ? 'search' : 'agent';
-  $('#useAgentWrap').classList.toggle('hidden', !(llmReady(s) || s.apiKeySet));
+  $('#useAgentWrap').classList.toggle('hidden', state.hosted || !(llmReady(s) || s.apiKeySet));
+  // Hide example questions whose dataset is not in this universe (the online copy leaves out the Berkshire letters).
+  document.querySelectorAll('.example[data-needs]').forEach((b) => b.classList.toggle('hidden', !!state.index && !datasetDocCount(b.dataset.needs)));
   if (state.concl.status !== 'writing') renderConclusionWin();
   $('#askBtn').disabled = !state.index;
   $('#askStatus').textContent = state.index ? `${state.docs.length.toLocaleString()} docs · ${state.model ? 'trained' : 'untrained'}` : 'Not built';
@@ -794,7 +805,10 @@ function jumpToRef(n) {
   if (!t) return;
   const d = t.closest('details');
   if (d) d.open = true;
-  t.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  // Scroll only the conclusion window, vertically; scrollIntoView would also nudge it (and the page) sideways.
+  const win = t.closest('.concl-win');
+  if (win) win.scrollTo({ top: win.scrollTop + t.getBoundingClientRect().top - win.getBoundingClientRect().top - 12, left: 0, behavior: 'smooth' });
+  else t.scrollIntoView({ block: 'center', behavior: 'smooth' });
   t.classList.add('flash'); setTimeout(() => t.classList.remove('flash'), 1400);
 }
 
@@ -812,7 +826,7 @@ function passageHtml(id) {
   const i = state.index.chunkById.get(id);
   if (i == null) return '';
   const c = state.index.chunks[i], d = state.index.docs.get(c.docId);
-  return `<div class="passage"><div class="muted"><code>${esc(id)}</code> · ${esc(d.title)} · ${esc(d.date || 'undated')}${d.url ? ` · <a href="${esc(d.url)}" target="_blank">local file</a>` : ''}${d.source ? ` · <a href="${esc(d.source)}" target="_blank" rel="noopener">original</a>` : ''}</div><p>${esc(c.text)}</p></div>`;
+  return `<div class="passage"><div class="muted"><code>${esc(id)}</code> · ${esc(d.title)} · ${esc(d.date || 'undated')}${d.url && !state.hosted ? ` · <a href="${esc(d.url)}" target="_blank">local file</a>` : ''}${d.source ? ` · <a href="${esc(d.source)}" target="_blank" rel="noopener">original</a>` : ''}</div><p>${esc(c.text)}</p></div>`;
 }
 
 function sparkline(docId) {
@@ -832,6 +846,11 @@ function sparkline(docId) {
 function renderConclusionWin() {
   const el = $('#conclusionWin');
   if (!el || !state.status) return;
+  if (state.hosted) {
+    el.innerHTML = `<div class="conclusion pending"><h3>Conclusion</h3><p>This online copy shows the ranked, cited options only. In the local version a free open model (GPT-OSS 20B) reads the most relevant entries and writes one conclusion here, citing each by number.</p>
+      <p class="muted small-text">Writing conclusions needs a small server to call the model, which a static GitHub Pages site does not have.</p></div>`;
+    return;
+  }
   const s = state.status.settings, c = state.concl;
   const engine = c.engine || currentEngine();
   const who = engine === 'open' ? `${esc(llmLabel(s))} · free open-weight model` : engine === 'claude' ? `Claude agent · ${esc(s.model)}` : 'No model';
@@ -856,7 +875,7 @@ function renderConclusionWin() {
     el.innerHTML = `<div class="conclusion">${head(`<span class="conf" data-conf="${esc(r.confidence)}">${esc(r.confidence)} confidence</span>`)}
       <p>${text}</p>
       ${r.droppedCitations ? `<p class="warn-text">${r.droppedCitations} citation${r.droppedCitations > 1 ? 's' : ''} not found in the universe ${r.droppedCitations > 1 ? 'were' : 'was'} removed.</p>` : ''}
-      ${r.conclusion.refs.length ? `<details open><summary>References (${r.conclusion.refs.length})</summary>${r.conclusion.refs.map((id, i) => `<div id="ref-${i + 1}"><b class="ref-n">${i + 1}</b>${passageHtml(id)}</div>`).join('')}</details>` : '<p class="warn-text">The conclusion has no valid citations: treat it as unverified.</p>'}
+      ${r.conclusion.refs.length ? `<details open><summary>References (${r.conclusion.refs.length})</summary>${r.conclusion.refs.map((id, i) => `<div class="ref-item" id="ref-${i + 1}"><b class="ref-n">${i + 1}</b><div>${passageHtml(id)}<button class="text-btn plain" type="button" data-more aria-expanded="false">Show full excerpt</button></div></div>`).join('')}</details>` : '<p class="warn-text">The conclusion has no valid citations: treat it as unverified.</p>'}
       <p class="muted small-text">${r.mode === 'open' ? `Written by ${esc(r.model)} from the ${r.entries} most relevant entries in your universe` : 'Written by Claude from the entries it found in your universe'} in ${c.seconds}s${r.usage ? ` · ${r.usage.input_tokens?.toLocaleString()} tokens in, ${r.usage.output_tokens?.toLocaleString()} out` : ''}. Not investment advice.</p>
       <div class="win-actions"><button class="secondary small" type="button" data-win="copy">Copy</button><button class="secondary small" type="button" data-win="retry">Regenerate</button><span class="muted small-text" id="winMsg" role="status"></span></div></div>`;
     return;
@@ -908,6 +927,13 @@ function renderAll() { renderDatasets(); renderSettings(); renderTrain(); render
 async function init() {
   state.catalog = JSON.parse(await getText('catalog.json'));
   await refreshStatus();
+  if (state.hosted) {
+    document.body.classList.add('hosted');
+    document.querySelector('.eng-text').textContent = 'Online demo · Public Data Only';
+    document.querySelector('.engine').title = 'Read-only copy on GitHub Pages; only public data is used';
+    document.querySelector('.foot-note').textContent = 'AI in Finance Week 2026 · online demo';
+    document.querySelector('#view-datasets .sp-l').textContent = 'In this online copy';
+  }
   if (state.status.index['docs.json']) { try { await loadUniverse(); } catch (e) { console.error(e); } }
   renderAll();
   // Ask comes first. With nothing built yet there is nothing to ask, so start on Datasets instead.
@@ -976,14 +1002,17 @@ async function init() {
     catch { $('#winMsg').textContent = 'Copy blocked by the browser.'; }
   });
   $('#conclusionWin').addEventListener('click', (e) => {
+    const more = e.target.closest('[data-more]');
+    if (more) {
+      const open = more.closest('.ref-item').classList.toggle('open');
+      more.textContent = open ? 'Show less' : 'Show full excerpt';
+      more.setAttribute('aria-expanded', open);
+      return;
+    }
     const a = e.target.closest('.ref');
     if (!a) return;
     e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (!t) return;
-    t.closest('details').open = true;
-    t.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    t.classList.add('flash'); setTimeout(() => t.classList.remove('flash'), 1400);
+    jumpToRef(a.getAttribute('href').slice(5));
   });
   document.querySelectorAll('.example').forEach((b) => b.addEventListener('click', () => { $('#askInput').value = b.textContent; ask(); }));
 }

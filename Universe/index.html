@@ -63,7 +63,7 @@ code{font:11.5px var(--mono);background:var(--recess);border:1px solid var(--lin
 .theme-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line2);background:var(--recess);border-radius:9px;padding:7px 9px;font:500 11px var(--mono);cursor:pointer;color:var(--ink2);white-space:nowrap}.theme-btn:hover{border-color:var(--accent);color:var(--ink)}
 .foot-note{margin:0;padding:0 6px;font:10.5px var(--mono);color:var(--muted)}
 /* ---- shell, hero ---- */
-.shell{max-width:1200px;margin:0 auto;padding:30px 28px 70px}
+.shell{width:100%;min-width:0;max-width:1200px;margin:0 auto;padding:30px 28px 70px}
 .hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:24px}
 .eyebrow-mono{margin:0 0 8px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .hero h1{font:500 clamp(30px,3.6vw,42px)/1.12 var(--serif);letter-spacing:-.02em;margin:0}.hero h1 .mono{color:var(--accent);font-size:.86em}
@@ -150,7 +150,7 @@ progress{display:none}
 .q-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:10px}.q-controls>div{min-width:200px}.q-buttons{margin-left:auto;display:flex;gap:8px;align-items:center}
 .mode{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:12.5px}.badge-mode{padding:4px 9px;border-radius:5px;font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--pos-line);background:var(--pos-bg);color:var(--pos)}.badge-mode[data-mode=search]{border-color:var(--hold-line);background:var(--hold-bg);color:var(--hold)}
 .examples{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.example{border:1px solid var(--line);border-radius:7px;background:var(--recess);padding:5px 10px;font-size:12px;cursor:pointer;color:var(--ink2)}.example:hover{border-color:var(--accent);color:var(--accent)}
-.ask-grid{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start;margin-top:20px}
+.ask-grid{display:grid;grid-template-columns:minmax(0,1fr) clamp(380px,32vw,500px);gap:20px;align-items:start;margin-top:20px}
 #answers{display:grid;gap:14px}.answer-head h2{font:500 27px/1.2 var(--serif);margin:4px 0 8px}.badges{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .options{list-style:none;margin:0;padding:0;display:grid;gap:10px}.option{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px}
 .rank{width:38px;height:38px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;font:600 15px var(--mono)}.option:nth-child(n+4) .rank{background:var(--dim-bg);color:var(--dim-ink)}
@@ -161,14 +161,20 @@ progress{display:none}
 .spark{margin:10px 0 0;color:var(--accent)}.spark figcaption{font:11px var(--mono);color:var(--muted)}
 .thinking{padding:14px;border:1px dashed var(--line2);border-radius:10px;font-size:13px;color:var(--muted);background:var(--recess)}.empty-result{border:1px dashed var(--line2);border-radius:12px;padding:20px;color:var(--muted)}.empty-result h3{font:500 19px var(--serif);color:var(--ink);margin:0 0 4px}
 .gaps{background:var(--hold-bg);border:1px solid var(--hold-line);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--hold)}.gaps h3{font:500 16px var(--serif);margin:0 0 4px}.gaps p{margin:0}
-.concl-win{position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:auto;display:grid;gap:0}
+.concl-win{position:sticky;top:84px;max-height:calc(100vh - 100px);overflow:hidden auto;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,1fr);gap:0;border-radius:12px}
+.opt-body,.passage,.concl-win code{overflow-wrap:anywhere}
 .conclusion{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;box-shadow:var(--shadow);padding:16px 20px}.conclusion h3{font:500 21px var(--serif);margin:0}.conclusion>p{font:16px/1.6 var(--serif);color:var(--ink);margin:8px 0 0}
 .conclusion>p.small-text{font:11.5px/1.45 var(--sans);color:var(--muted);margin-top:10px}.conclusion>p.warn-text{font:12px var(--sans);color:var(--neg)}
 .conclusion.pending{border-left-color:var(--hold-bar);box-shadow:none}.conclusion.pending>p{font:13px/1.5 var(--sans);color:var(--ink2)}.conclusion.error{border-left-color:var(--neg)}.conclusion.error>p{font:13px/1.5 var(--sans);color:var(--neg)}
 .concl-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.win-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font:11px var(--mono);color:var(--muted);margin-top:4px}
 .conf{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:5px;border:1px solid var(--hold-line);background:var(--hold-bg);color:var(--hold)}.conf[data-conf=high]{background:var(--pos-bg);border-color:var(--pos-line);color:var(--pos)}.conf[data-conf=low]{background:var(--neg-bg);border-color:var(--neg-line);color:var(--neg)}
 .ref{font:700 10px var(--mono);vertical-align:super;margin-left:2px;padding:0 3px;border:1px solid var(--line2);border-radius:3px;text-decoration:none;color:var(--accent)}.ref:hover{background:var(--brand-tint)}
-.ref-n{font:700 11px var(--mono);color:var(--on-brand);background:var(--brand);border-radius:3px;padding:0 5px;margin-right:6px}[id^=ref-]{margin-top:8px;border-radius:6px;transition:box-shadow .3s}[id^=ref-].flash{box-shadow:0 0 0 3px var(--hold-bar)}[id^=ref-] .passage{display:inline-block;width:calc(100% - 30px);vertical-align:top;margin-top:0}
+.ref-n{font:700 11px var(--mono);color:var(--on-brand);background:var(--brand);border-radius:3px;padding:0 5px;margin-right:6px}.conclusion details summary{cursor:pointer;margin-top:14px;font:600 12px var(--sans);color:var(--ink2)}
+.ref-item{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px;align-items:start;margin-top:10px;padding:8px;border-radius:8px;background:var(--recess);transition:box-shadow .3s}.ref-item.flash{box-shadow:0 0 0 3px var(--hold-bar)}.ref-item .ref-n{margin-top:3px}
+.ref-item .passage{margin-top:0;border-left:0;padding:0 0 0 4px;min-width:0}.ref-item .passage>.muted{font-size:11.5px;line-height:1.45}
+.ref-item .passage p{white-space:normal;max-height:none;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-height:1.5}.ref-item.open .passage p{display:block}
+.ref-item .text-btn{font-size:11.5px;margin:4px 0 0 4px}
+.hosted-only{display:none}.hosted .hosted-only{display:block}.hosted #settingsForm{display:none}
 .win-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
 .writing{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}.dot{width:9px;height:9px;border-radius:50%;background:var(--signal);animation:pulse 1.1s ease-in-out infinite}@keyframes pulse{50%{opacity:.25}}
 .clarify{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--hold-bar);border-radius:12px;box-shadow:var(--shadow);padding:16px 20px}.clarify h2{font:500 25px/1.2 var(--serif);margin:4px 0 6px}.clarify>p{font-size:13px;margin:4px 0}
@@ -242,7 +248,8 @@ progress{display:none}
 <main class="shell">
   <section class="view hidden" id="view-datasets">
     <div class="hero">
-      <div><p class="eyebrow-mono">Step 02 // Public Data Acquisition</p><h1>Pick the public datasets for your universe.</h1><p class="lede">Each dataset downloads into <code>Universe\data</code> on this computer. The agent answers only from what is downloaded here, nothing else.</p></div>
+      <div><p class="eyebrow-mono">Step 02 // Public Data Acquisition</p><h1>Pick the public datasets for your universe.</h1><p class="lede">Each dataset downloads into <code>Universe\data</code> on this computer. The agent answers only from what is downloaded here, nothing else.</p>
+        <p class="note hosted-only">Online demo: a read-only copy of the universe built on 26 Oct 2026. Downloads and settings work only in the local version. The Berkshire Hathaway letters are left out here because their full text is copyrighted.</p></div>
       <div class="statuspill"><div><div class="sp-l">On this computer</div><div class="sp-v" id="catalogSummary"></div></div></div>
     </div>
     <div class="ds-grid">
@@ -291,6 +298,7 @@ progress{display:none}
         <p class="eyebrow-mono">Step 03 // Corpus Indexing &amp; BM25 Optimization</p>
         <h1>Build the universe, then train the ranking <span class="mono">80/20</span>.</h1>
         <p class="lede">Index raw financial downloads into structured searchable passages, then grid-search <span class="combos-n">256</span> BM25 ranking configurations against an auto-generated ground-truth question set.</p>
+        <p class="note hosted-only">Online demo: building and training run only in the local version. The scores below were measured on the full local universe, which also includes the 26 Berkshire Hathaway letters left out of this online copy.</p>
       </div>
       <div class="statuspill" aria-label="Index telemetry">
         <div><div class="sp-l">Index status</div><div class="sp-v" id="idxStatus">—</div></div>
@@ -369,7 +377,7 @@ progress{display:none}
         <button type="button" class="example">What did the FOMC say about inflation in 2023?</button>
         <button type="button" class="example">What is Fisher Investments' top-down investment process?</button>
         <button type="button" class="example">What did Fisher say about the regional bank scare in 2023?</button>
-        <button type="button" class="example">What did Buffett write about share repurchases?</button>
+        <button type="button" class="example" data-needs="berkshire-letters">What did Buffett write about share repurchases?</button>
         <button type="button" class="example">Compare CPI inflation across countries in 2022</button>
         <button type="button" class="example">Is the Shiller CAPE high compared with history?</button>
       </div>

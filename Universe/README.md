@@ -134,6 +134,16 @@ Set *Conclusions written by* to Claude and add a Claude API key. Each answer the
 - `universe-core.mjs`: parsers, document builders, BM25 index, question generation, 80/20 split, grid search, agent tools and answer checks (pure functions).
 - `universe-ui.mjs`, `index.html`: the dashboard.
 - `universe-core.test.mjs`, `run-tests.html`: tests, run in the browser.
+- `export-hosted.ps1`, `hosted/`: the read-only snapshot for the online copy (see below).
+
+## Online copy (GitHub Pages)
+
+A read-only copy runs at https://nyatiaditya299.github.io/data-universe/Universe/ so it opens on a phone or for anyone with the link.
+
+- With no local server, the page reads `hosted/` (the built index, ranking and dataset list) instead of `data/`. Ranked options, citations, scopes and the reasoning trace work. Downloading, building, training, settings and **written conclusions** are switched off: Pollinations refuses calls made straight from a web page (bot check), so conclusions need a server, which GitHub Pages does not have.
+- The 26 Berkshire Hathaway letters are left out (copyrighted full text), so the online universe has 3,461 documents instead of 3,487. The training scores shown were measured on the full local universe.
+- `status.json` carries no settings: no email, no keys.
+- To refresh it after a rebuild: run `export-hosted.ps1`, then upload `Universe/hosted/` again. Open `http://localhost:8010/Universe/?hosted` to preview the online copy locally.
 
 ## Limits
 
