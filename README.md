@@ -14,7 +14,7 @@ powershell -ExecutionPolicy Bypass -File Universe\serve.ps1
 
 Then open <http://localhost:8010/Universe/>. Tests run at <http://localhost:8010/Universe/run-tests.html>.
 
-The first time, open **01 Datasets**, click **Download all**, then **02 Build & train** and build the universe and train the ranking, then ask questions in **03 Ask**. The downloaded data (`Universe/data/`) and your settings (`Universe/settings.json`) are not in this repository; the dashboard recreates them.
+The first time, open **02 Datasets**, click **Download all**, then **03 Build & train** and build the universe and train the ranking, then ask questions in **01 Ask** (the sidebar lists Ask first). The downloaded data (`Universe/data/`) and your settings (`Universe/settings.json`) are not in this repository; the dashboard recreates them.
 
 ## What is where
 

@@ -76,7 +76,7 @@ powershell -ExecutionPolicy Bypass -File "C:\Users\nyati\Documents\Ai in Finance
 - Tests: http://localhost:8010/Universe/run-tests.html (**22 passing**)
 - Also registered as the `universe` entry in `.claude/launch.json`.
 
-Tabs: **1 · Datasets** (download, settings) → **2 · Build & train** → **3 · Ask**.
+Sidebar order (changed 26 Oct at the owner's request): **01 Ask**, **02 Datasets** (download, settings), **03 Build & train**. The first-time workflow is still Datasets → Build & train → Ask. The page opens on Ask once a universe is built, otherwise on Datasets.
 
 ## 3. To finish setup (owner action)
 
