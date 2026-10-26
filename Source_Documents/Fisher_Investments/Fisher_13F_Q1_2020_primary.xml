@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edgarSubmission xmlns="http://www.sec.gov/edgar/thirteenffiler" xmlns:com="http://www.sec.gov/edgar/common">
+  <headerData>
+    <submissionType>13F-HR</submissionType>
+    <filerInfo>
+      <liveTestFlag>LIVE</liveTestFlag>
+      <flags>
+        <confirmingCopyFlag>false</confirmingCopyFlag>
+        <returnCopyFlag>true</returnCopyFlag>
+        <overrideInternetFlag>false</overrideInternetFlag>
+      </flags>
+      <filer>
+        <credentials>
+          <cik>0000850529</cik>
+          <ccc>XXXXXXXX</ccc>
+        </credentials>
+      </filer>
+      <periodOfReport>03-31-2020</periodOfReport>
+    </filerInfo>
+  </headerData>
+  <formData>
+    <coverPage>
+      <reportCalendarOrQuarter>03-31-2020</reportCalendarOrQuarter>
+      <filingManager>
+        <name>Fisher Asset Management, LLC</name>
+        <address>
+          <com:street1>5525 NW FISHER CREEK DRIVE</com:street1>
+          <com:city>CAMAS</com:city>
+          <com:stateOrCountry>WA</com:stateOrCountry>
+          <com:zipCode>98607</com:zipCode>
+        </address>
+      </filingManager>
+      <reportType>13F HOLDINGS REPORT</reportType>
+      <form13FFileNumber>028-02499</form13FFileNumber>
+      <provideInfoForInstruction5>N</provideInfoForInstruction5>
+    </coverPage>
+    <signatureBlock>
+      <name>Tom Fishel</name>
+      <title>Chief Compliance Officer</title>
+      <phone>650-851-3334</phone>
+      <signature>Tom Fishel</signature>
+      <city>San Mateo</city>
+      <stateOrCountry>CA</stateOrCountry>
+      <signatureDate>04-28-2020</signatureDate>
+    </signatureBlock>
+    <summaryPage>
+      <otherIncludedManagersCount>0</otherIncludedManagersCount>
+      <tableEntryTotal>866</tableEntryTotal>
+      <tableValueTotal>80640391</tableValueTotal>
+      <isConfidentialOmitted>false</isConfidentialOmitted>
+    </summaryPage>
+  </formData>
+</edgarSubmission>
