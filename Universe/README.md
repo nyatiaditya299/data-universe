@@ -85,7 +85,7 @@ Latest run (26 Oct 2026, after adding the Fisher documents; 407 questions includ
 
 Built to `data_universe_ui_upgrade_specification.md` (Editorial Quantitative / Institutional Telemetry). All styling lives in `index.html`; colours, fonts and spacing are tokens on `:root`, so a theme is one block of variables.
 
-- **Themes**: *Editorial Quant Light* (default if the system is light) and *PRISM Dark Obsidian*. The toggle in the top bar follows the system setting on first visit and remembers your choice in the browser.
+- **Themes**: *PRISM Dark Obsidian* (the default, also on the online copy) and *Editorial Quant Light*. The toggle in the sidebar switches and remembers your choice in the browser.
 - **Fonts**: Newsreader (headings), Inter (interface), JetBrains Mono (every number, with tabular figures). They load from Google Fonts; offline, the page falls back to Georgia, system sans and Consolas.
 - **Top bar**: completion dots on each step (data downloaded · universe built and tuned · a question asked), monospace step numbers, a pulsing *Local Engine · Public Data Only* indicator, and a `Local` chip.
 - **Build & train (step 3 in the sidebar)**: a status pill (index status, last trained) in the header; Card A with a 3-column telemetry strip, ingestion pipelines with live document counts, and index size; Card B with the 80/20 split bar showing question counts, the four tuned parameters with their search ranges and winning values, and a live `n/256 evaluated` counter while training runs; a results panel with before/after delta bars, lift badges, a winning-weights banner and a button on to Ask (step 1). Click a metric to see it by document type (macro and market fact sheets, letters and statements, 13F filings).

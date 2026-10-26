@@ -962,7 +962,7 @@ async function init() {
   $('#motionBtn').addEventListener('click', () => { motion = !motion; applyMotion(motion, true); });
   $('#thinkTree').addEventListener('click', (e) => { const g = e.target.closest('[data-ref]'); if (g) jumpToRef(g.dataset.ref); });
   $('#thinkTree').addEventListener('keydown', (e) => { const g = e.target.closest('[data-ref]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); jumpToRef(g.dataset.ref); } });
-  applyTheme(document.documentElement.dataset.theme || 'light');
+  applyTheme(document.documentElement.dataset.theme || 'dark');
   $('#themeBtn').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true));
   $('#trainResult').addEventListener('click', (e) => {
     const go = e.target.closest('[data-go]'), row = e.target.closest('[data-row]');
