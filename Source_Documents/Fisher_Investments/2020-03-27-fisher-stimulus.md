@@ -1,61 +1,51 @@
-# sec.gov
+# Around the World in Coronavirus 'Stimulus'
 
-Original URL: https://www.sec.gov/Archives/edgar/data/850529/000085052920000005/2020Q113F.xml
+Original URL: https://www.fisherinvestments.com/en-us/insights/market-commentary/around-the-world-in-coronavirus-stimulus
+Publisher: Fisher Investments (Editorial Staff, MarketMinder)
+Published: 2020-03-27
+Captured: 2026-10-26 from the public page. Text only: tables, charts and bullet lists on the page are not captured.
 
-ALCOA UPSTREAM CORP COM COM 013872106 130 21142 SH DFND 17845 0 3297 ALEXION PHARMACEUTICALS INC COM 015351109 2678 29822 SH DFND 9714 0 20108 ALIBABA GROUP HLDG LTD ADR COM 01609W102 2579651 13264349 SH DFND 9461370 0 3802979 ALIGN TECHNOLOGY INC COM 016255101 67748 389466 SH DFND 178962 0 210504 ALLEGHENY TECHNOLOGIES INC COM 01741R102 9985 1174669 SH DFND 515535 0 659134 ALLSCRIPTS HEALTHCARE SOLUTNS COM 01988P108 37521 5329691 SH DFND 2877093 0 2452598 ALLSTATE CORP COM 020002101 290 3162
+The US isn't the only country loosening its purse strings to combat COVID-19 economic fallout.
 
-...
+While the US's $2 trillion stimulus bill is hogging headlines stateside, governments around the world are rolling out their own sweeping rescue packages in an effort to mitigate the economic consequences of COVID-19 containment efforts. Here is a look at some of the major responses we have seen from North America and Europe thus far. This isn't everything worldwide, and many more provisions may emerge or shift in the coming days. But it should give you a sense of how the globe is responding and what investors should reasonably expect from it.
 
-045327103 115295 1212738 SH DFND 606800 0 605938 ASPIRE INTERNATIONAL INC COM 04537N103 0 10000 SH SOLE 10000 0 0 ASTRAZENECA PLC ADR COM 046353108 739417 16556574 SH DFND 15274912 0 1281662 ASTRONICS CORP COM 046433108 272 29578 SH DFND 0 0 29578 ATLANTIC ENERGY SOLUTIONS INC COM 048539100 0 10000 SH SOLE 10000 0 0 ATLAS AIR WORLDWIDE HLDGS COM 049164205 12457 485274 SH DFND 210598 0 274676 AURASOURCE INC COM 05153V105 3 50000 SH SOLE 50000 0 0 AURINIA PHARMACEUTICALS INC COM 05156V102 185
+UK
 
-...
+Britain's government has rolled out a sequence of measures.
 
-COM 171340102 875 13639 SH DFND 9796 0 3843 CINCINNATI FINL CORP COM 172062101 732 9704 SH DFND 5928 0 3776 CISCO SYS INC COM 17275R102 824311 20969492 SH DFND 18807988 0 2161503 CITIC SECS CO LTD UNSP ADR ADR COM 17290L106 306 16703 SH SOLE 16703 0 0 CITIGROUP INC COM 172967424 729 17302 SH DFND 17086 0 216 CITIGROUP GLOBAL MKTS HLDGS IN COM 17325E291 5 29411 SH SOLE 29411 0 0 CLEVELAND CLIFFS INC COM 185899101 36060 9129022 SH DFND 4452817 0 4676205 CLOROX CO DEL COM 189054109 1675 9669 SH
+Sources: Bloomberg and The Guardian, as of 3/26/2020.
 
-...
+As with the US stimulus plans, we are sure these provisions (and all those that follow) will spur lots of debate about the wisdom of the capital allocation, whether the funds could be spent better elsewhere and more. We won't wade into that here—as with all such plans, eventually the money will leak into the hands of someone who spends it efficiently.
 
-URGENT CARE HLDGS INC COM 26884H207 0 508538 SH SOLE 508538 0 0 EAGLE BANCORP INC MD COM 268948106 422 13982 SH DFND 11493 0 2489 E TRADE FINANCIAL CORP COM 269246401 3714 108219 SH DFND 94038 0 14181 EAGLE PHARMACEUTICALS INC COM 269796108 659 14336 SH DFND 0 0 14336 EAST WEST BANCORP INC COM 27579R104 36912 1434050 SH DFND 699962 0 734088 EBAY INC.
+The key to these: timing. VAT cuts are immediate but don't actually add liquidity when the issue is business closures. The other measures—like increased welfare, sick leave and grants—may help in the short run, but we doubt any can really offset the impact of interruptions to daily life. Most of them would actually hit at a lag, suggesting they mostly boost the eventual recovery rather than spur it.
 
-...
+Germany
 
-40415F101 261043 6787397 SH DFND 2602715 0 4184682 H ENTERTAINMENT INC COM 40417A100 0 11500 SH SOLE 11500 0 0 HSBC HLDGS PLC ADR COM 404280406 14818 529032 SH DFND 513780 0 15252 HAEMONETICS CORP COM 405024100 17625 176847 SH DFND 116196 0 60651 HALLIBURTON CO COM 406216101 23434 3421087 SH DFND 2847757 0 573330 HALOZYME THERAPEUTICS INC COM 40637H109 19693 1094671 SH DFND 728049 0 366622 HARD TO TREAT DISEASES INC COM 41164A103 0 110000 SH SOLE 110000 0 0 HEARTLAND EXPRESS INC COM 422347104
+Even fiscally stalwart Germany—long considered a bastion of austerity—is getting in on the stimulus act. Thursday, the country unveiled a supplemental budget amounting to more than $800 billion designed to counter the crisis's effects. Major provisions include:
 
-...
+Sources: Deutsche Welle and Reuters, as of 3/27/2020.
 
-41486 SH SOLE 41486 0 0 INCYTE CORP COM 45337C102 3014 41155 SH DFND 31374 0 9781 INDEPENDENT BANK CORP MASS COM 453836108 5975 92830 SH DFND 32532 0 60298 INDUSTRIA DE DISENO TEXTIL ADR COM 455793109 148 11407 SH SOLE 11407 0 0 INFOSYS LTD ADR COM 456788108 258987 31545274 SH DFND 12699157 0 18846117 ING GROEP N.V.
-ADR COM 456837103 260561 50594355 SH DFND 47309709 0 3284646 INGERSOLL RAND INC COM 45687V106 316 12739 SH SOLE 12739 0 0 INSTALLED BLDG PRODS INC COM 45780R101 1882 47200 SH DFND 0 0 47200 INSULET CORP COM 45784P101 45031 271798 SH SOLE 271798 0 0 INTEGRA LIFESCIENCES HLDGS CP COM 457985208 31804 711982 SH DFND 691211 0 20771 INTEL CORP COM 458140100 1504643 27801984 SH DFND 25496672 0 2305311 INTEGER HLDGS CORP COM 45826H109 47655 758118 SH DFND 405286 0 352832 INTERCEPT PHARMACEUTICALS INC
-COM 45845P108 4235 67258 SH DFND 36191 0 31067 INTERNATIONAL BUSINESS MACHS COM 459200101 2057 18546 SH DFND 15896 0 2650 INTERNATIONAL PWR GROUP LTD COM 46018A100 0 39000 SH SOLE 39000 0 0 INTERPUBLIC GROUP COS INC COM 460690100 163 10059 SH SOLE 10059 0 0 INVESCO QQQ TRUST SERIES 1 COM 46090E103 213506 1121355 SH DFND 1103483 0 17871 INTESA SANPAOLO S P A ADR COM 46115H107 269575 27510711 SH DFND 24698505 0 2812205 INTUIT COM 461202103 685 2978 SH SOLE 2978 0 0 INTUITIVE SURGICAL INC COM
+This plan isn't a done deal yet—as we type, it is slated for a vote in the upper house of parliament on Friday. But, like all these measures, timing is key—and the German plan offers few details on that front thus far.
 
-...
+France
 
-MED DVC ETF COM 464288810 3880 17218 SH DFND 17044 0 174 ISHARES TR U.S.
+France is also reconsidering its plans in light of the coronavirus's impact. In mid-March, the country announced it was scrapping its planned budget and near-totally rethinking its priorities. In the new budget:
 
-...
+President Emmanuel Macron's long-touted and controversial pension reforms—that would have amounted to benefit cuts—are out.
+On March 20, the country enacted $327 billion in business loan guarantees designed to ensure banks won't lose out on loans made between March 16, 2020 and yearend—an effort to keep capital flowing to businesses.
+It also enacted $50 billion in delayed (and potentially canceled) tax payments, unemployment benefits and transfers to certain struggling businesses and individuals, including forestalling evictions and postponing utility bills.
 
-576690101 6408 183035 SH DFND 103201 0 79834 MCDERMOTT INTL INC COM COM 580037703 1 12138 SH SOLE 12138 0 0 MCDONALDS CORP COM 580135101 1771 10712 SH SOLE 10712 0 0 MEDICAL MARIJUANA INC COM 58463A105 0 16500 SH SOLE 16500 0 0 MEDINAH MINERALS INC COM 58489M109 0 15993 SH SOLE 15993 0 0 MEDPACE HLDGS INC COM COM 58506Q109 27748 378136 SH DFND 182956 0 195180 MERCADOLIBRE INC COM COM 58733R102 103849 212553 SH DFND 133926 0 78627 MERCK& CO.
-INC COM 58933Y105 685344 8907511 SH DFND 8045300 0 862210 MERIT MED SYS INC COM 589889104 13047 417490 SH DFND 208839 0 208651 MERITAGE HOMES CORP COM 59001A102 43393 1188513 SH DFND 536169 0 652344 MICROSOFT CORP COM 594918104 3383880 21456344 SH DFND 19739362 0 1716981 MICROSTRATEGY INC COM 594972408 3307 28000 SH DFND 0 0 28000 MID AMER APT CMNTYS INC COM 59522J103 38373 372446 SH DFND 192869 0 179577 MITSUBISHI ELEC CORP ADR COM 606776201 118858 4805744 SH DFND 4754433 0 51310 MITSUBISHI
+The government's loan guarantees are an interesting measure that could help businesses that need to roll over credit lines. However, whether bank will be willing to go along with the measure remains to be seen—a fact that hinges as much on the ECB and accounting principles as it does the government's maneuvering.
 
-...
+Canada
 
-CORP COM 70438V106 11930 135076 SH DFND 90531 0 44545 PAYPAL HLDGS INC COM 70450Y103 670500 7003347 SH DFND 6555731 0 447616 PaySign Inc.
+Canada, like the others, has enacted a multifaceted approach aiming to ensure continued credit flow to businesses as well as increase the social safety net. Initially, the government pushed for a bill that would empower the cabinet to tax and spend without Parliamentary approval through 2021, but opposition lawmakers shot it down, and the resulting legislation was a compromise across the board.
 
-...
+The key credit move: The government announced it would buy up to USD $107 billion in mortgages from banks, a move aiming to infuse them with fresh capital to lend to business and individuals.
+Separately, the government announced a financial aid package that includes a six-month delay in student loan repayments, expanded unemployment benefits for four months for workers affected by the crisis, wage assistance for small businesses, tax credits and more.
 
-PHARMACEUTICALS INC COM 743187106 399 105125 SH DFND 0 0 105125 PROGRESS SOFTWARE CORP COM 743312100 22768 711506 SH DFND 420921 0 290585 PROGRESSIVE CORP OHIO COM 743315103 3011 40774 SH DFND 34009 0 6765 PROLOGIS INC COM COM 74340W103 3683 45820 SH DFND 38334 0 7486 PROOFPOINT INC COM 743424103 13413 130741 SH DFND 85361 0 45380 PROPETRO HLDG CORP COM 74347M108 4381 1752416 SH DFND 1367270 0 385146 PROSPERITY BANCSHARES INC COM 743606105 15722 325840 SH DFND 88754 0 237086 PROSUS N V
+These measures, which would hit over a period of months beginning in April, are only likely to matter much if the interruptions to business prove lasting—and in that case, they are likely insufficient. In the other scenario—a quick end to the crisis—they may never be used at all.
 
-...
+Ultimately, and as we wrote recently, while fiscal stimulus can help money circulate some during recessions, it can't end them. Nothing here changes our view on that. However, it is clear that, whenever disruptions to business end, fiscal policy should be a powerful tailwind for growth across much of the developed world.
 
-3535820 0 43433 TOLL BROTHERS INC COM 889478103 1595 82841 SH DFND 35949 0 46892 TORO CO COM 891092108 79077 1214881 SH DFND 629785 0 585096 TORONTO DOMINION BK ONT COM 891160509 209 4930 SH SOLE 4930 0 0 TOTAL S.A.
-
-...
-
-0 2100 ESCROW QUICKSILVER RESOURCES I COM 9994AAD6T 0 50000 SH SOLE 50000 0 0 ESCROW LEHMAN BROS 5.75 COM 99952ECCT 0 80000 SH SOLE 80000 0 0 INVESCO HEALTH CARE S&P US SEL COM 9995910DT 2334 5722 SH DFND 0 0 5722 ESCROW LEHMAN BROTHERS HOLDING COM 9995C1C8T 0 55000 SH SOLE 55000 0 0 ESCROW LEHMAN BROS HLDG COM 9995ED22T 0 28000 SH SOLE 28000 0 0 ESCROW WALKER INNOVATION COM 9995FC1CT 0 17000 SH SOLE 17000 0 0 KRANESHARES CHNA INTERNT UCITS COM 9996A6F2T 19529 688990 SH DFND 77686 0 611304 FED
-
-...
-
-999B39FCT 3848 18837 SH DFND 0 0 18837 ESCROW CA STATEWIDE CMNTY DEV COM 999CCEC0T 0 10000 SH SOLE 10000 0 0 ESCROW WASHINGTON MUTUAL INC COM 999D5458T 0 26714 SH SOLE 26714 0 0 100000TH INVESCO VAN KAMPEN COM 999DF84CT 0 79946 SH SOLE 79946 0 0 ESCROW WONDER AUTO TECHNOLOGY COM 999E5491T 0 10370 SH SOLE 10370 0 0 VANGUARD FUNDS PLC FTSE EMERGI COM 999F551FT 25690 551878 SH SOLE 551878 0 0 ESCROW ILINC COMM INC COM 999F9485T 0 15000 SH SOLE 15000 0 0 100000TH MARRIOT INTL INC COM FHB90320T 0
-
-...
-
-NOVO NORDISK A S COM K72807132 205 3500 SH SOLE 3500 0 0 GLOBANT S A COM COM L44385109 44229 503286 SH DFND 81464 0 421822 CHECK POINT SOFTWARE TECH LTD COM M22465104 2776 27615 SH SOLE 27615 0 0 ELBIT SYS LTD COM M3760D101 4883 38242 SH SOLE 38242 0 0 STRATASYS LTD COM M85548101 35555 2229123 SH DFND 1072866 0 1156257 ASML HOLDING N V NYS COM N07059210 903594 3453577 SH DFND 2926209 0 527367 CORE LABORATORIES N V COM N22717107 9625 930831 SH DFND 399117 0 531714 NXP SEMICONDUCTORS N V COM
-N6596X109 72732 877024 SH DFND 381821 0 495203 YANDEX N V COM N97284108 63882 1876119 SH DFND 814975 0 1061144 MAKEMYTRIP LTD COM V5633W109 1854 155067 SH SOLE 155067 0 0 BENGUET CORP BC SHS COM Y07832143 2 90000 SH SOLE 90000 0 0 CHINA OILFIELD SERVICES LTD COM Y15002101 28 39320 SH SOLE 39320 0 0
+*The content contained in this article represents only the opinions and viewpoints of the Fisher Investments editorial staff.

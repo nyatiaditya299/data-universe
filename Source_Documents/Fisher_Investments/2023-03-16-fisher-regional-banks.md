@@ -1,80 +1,30 @@
-# Putting the Regional Bank Scare Into Perspective | Insights | Fisher Investments
+# Putting the Regional Bank Scare Into Perspective
 
 Original URL: https://www.fisherinvestments.com/en-us/insights/market-commentary/putting-the-regional-bank-scare-into-perspective
+Publisher: Fisher Investments (MarketMinder)
+Published: 2023-03-16
+Captured: 2026-10-26 from the public page. Text only.
 
-to main content
-* [Locations](https://www.fisherinvestments.com/en-us/locations)
-* [Careers](https://www.fisherinvestments.com/en-us/about/our-people/careers)
-* [Client Login](https://clients.fisherinvestments.com/?whitelist=true)
-United States
-Selected Country/Region:
-United States (English)
+The banking system is healthier than perceived.
 
-...
+Editors' Note: MarketMinder doesn't make individual security recommendations. The below merely represent a broader theme we wish to highlight.
 
-# [About Us](https://www.fisherinvestments.com/en-us/about) Our investment experience, leadership and culture help us provide world-class, client-focused service.
-* [Our Representatives](https://www.fisherinvestments.com/en-us/about/our-people)
-* [Form CRS & Form ADV](https://www.fisherinvestments.com/en-us/disclosures/form-crs-and-form-adv)
+One week after Silicon Valley Bank (SIVB) first spooked markets with plans to raise capital and book big losses on its Treasury portfolio, investors' angst hasn't died down. SIVB officially failed Friday. Another regional bank, Signature Bank, followed suit Saturday. On Sunday, the Fed pumped liquidity to smaller regional banks and guaranteed all SIVB and Signature deposits above the FDIC's deposit insurance ceiling ($250,000). But talk of contagion and the hunt for the next domino to fall continued, sending US bank stocks sharply lower this week. But our research suggests the banking system is overall quite healthy, and this storm too should pass before long, with stocks rebounding faster than most anyone envisions now.
 
-...
+Very few people think the failures of SIVB and Signature alone will cause a deep downturn. Though described as the second- and third-largest bank failures in history, this is accurate only if you don't adjust for inflation or scale relative to GDP. Depression-era failures were far, far larger once you do that math. No, the main fear now is contagion—that bank runs will spread to other similarly sized institutions, culminating in a national financial meltdown. Tellingly, smaller regional banks have taken a disproportionately large hit over the last week, and credit ratings agency Moody's put six on notice for a potential downgrade. Deposits are reportedly fleeing for the four largest, so-called "too big to fail" US banks.
 
-# [Institutional Investing](https://www.fisherinvestments.com/en-us/institutional-investing) We serve a diverse group of institutional clients around the world including pension funds, governments, foundations, endowments and more.
-* [Top-Down Investment Process](https://www.fisherinvestments.com/en-us/institutional-investing/top-down-investment-process) + ### [Top-Down Investment Process](https://www.fisherinvestments.com/en-us/institutional-investing/top-down-investment-process)
+In our view, this narrative glosses over a couple of important factors. One: The US banking system is extremely well capitalized. Tier 1 capital—the highest-quality buffer—is well above regulatory minimums and miles above its level before 2007 – 2009's global financial crisis. Meanwhile, loan-to-deposit ratios are below pretty much any point in the last 50 years, showing banks have far greater capability to meet withdrawal requests without dumping illiquid assets than headlines are giving them credit for now. Smaller banks do have less cash as a percentage of total assets than large banks do, but the Fed's new liquidity program should help with this.
 
-...
+Two, SIVB and Signature Bank don't represent the broader regional banking system. Signature ballooned on the cryptocurrency industry, putting it in hot water after crypto crashed. SIVB was largely created by the venture capital (VC) world to serve the VC world—the funds and partners as well as their portfolio companies and their employees, customers and friends. Many funding deals included banking with SIVB as a condition. It was that structure, not simply being a midsized regional bank, that brought it down. It meant SIVB was overly exposed to Tech and Tech-like companies—particularly the younger ones with higher cash-burn rates. As the startup world hit tough sledding last year, these companies drew down cash reserves to continue funding operations. Meanwhile, the US Treasury bonds on SIVB's balance sheet fell in value as interest rates rose, eroding its capital. That culminated in the planned capital raise, which might have worked had the VCs not told their portfolio companies to pull their money before everyone else did. It all turned into a very rapid, sudden run on SIVB's deposits. And with the bonds on its balance sheet down tied to rising rates, the company needed capital pretty desperately.
 
-[Read Our Insights](https://www.fisherinvestments.com/en-us/insights=%40publisheddate%20descending&numberOfResults=12&f:Topic=%5BMacro%20Insights%5D&f:BusinessLine=%5BInstitutional%20Investing%5D)
+But don't other banks own Treasury bonds? Yes. But there are caveats to this. For one, SIVB carried an unusually high percentage of its assets in fixed-rate, longer-term securities, making it particularly exposed to rising rates.[i] And this is where accounting rules come into play. Banks can designate assets as either Available for Sale (AFS) or Hold to Maturity (HTM). AFS is for the most liquid assets—those banks can sell to meet cash needs. Hence, they are marked to the most recently observed market value. HTM is for the less liquid, harder to value assets that banks don't intend to sell and are therefore at less risk of realizing losses on. Therefore, they are no longer marked to market for regulatory capital purposes. This is in contrast to 2008, when then-prevailing rules dictated that even illiquid assets banks had no intent of trading had to be marked to market. As long-term interest rates rise and Treasury bond values fall, banks can move holdings from AFS to HTM to avoid the mark-to-market capital hit. Doing so is a tradeoff, since it sacrifices liquidity, but most banks had enough of a cushion to do it. SIVB didn't, leading to last week's announcement that it would firesale over $20 billion worth of Treasurys at a $1.8 billion loss.
 
-# [Insights](https://www.fisherinvestments.com/en-us/insights) Gain valuable insights on current market topics and issues from our seasoned team of investing professionals
-* [Market Insights](https://www.fisherinvestments.com/en-us/insights) + ### [Market Insights](https://www.fisherinvestments.com/en-us/insights)
-+ [MarketMinder - Daily Market Commentary](https://www.fisherinvestments.com/en-us/insights/market-commentary)
+Despite SIVB and Signature Bank's unique issues, we aren't ruling out more failures. Bank runs are psychological events, and sometimes rumors trump reason. The Fed, as ever, seemed to sow more chaos than confidence. The decision to bail out uninsured deposits will likely reverberate for years to come and could be a watershed moment. We have plenty of thoughts on it and will share those soon. But in the very short term, while easing fears of startups (strangely and suddenly cast as local small businesses rather than companies with several dozen employees and bigtime venture funding) not making payroll this week, it sets the expectation that the Fed and Treasury will guarantee uninsured depositors at any other failed institution. They claimed their move won't cost taxpayers a cent, and the largest banks will pay for it via a special surcharge. But banks are pretty good at passing these things on to customers.
 
-...
+As for the liquidity program, its structure seems beneficial enough. It lets banks get short-term loans using their AFS portfolios as collateral—but at par values, not market values. Essentially, this means banks can convert their AFS portfolios to cash without selling and taking losses. On paper it should help bridge any gaps that arise. But whenever the Fed creates new programs like this, it gives the impression that they see a massive problem, which can heighten panic. That seemed to be at play this week. If that continues, deposits keep fleeing and a few more banks go under, the fear factor could linger. Lending could also take a hit if banks decide a dollar in reserve is better than a dollar lent, so we will be watching loan growth data closely as they come out each week. Furthermore, the response here raises the question once again about how regulators approach banks that encounter trouble. Post-2008 regulation was intended to fix this, but alas, that doesn't seem to have happened. Already there are calls for more regulation—which could create uncertainty. We are monitoring that aspect of the story closely.
 
-* [Personal Wealth Management Insights](https://www.fisherinvestments.com/en-us/insights=12&f:BusinessLine=%5BPersonal%20Wealth%20Management%5D) + ### [Personal Wealth Management Insights](https://www.fisherinvestments.com/en-us/insights=12&f:BusinessLine=%5BPersonal%20Wealth%20Management%5D)
-+ [Financial Planning](https://www.fisherinvestments.com/en-us/insights=relevancy&numberOfResults=12&f:BusinessLine=%5BPersonal%20Wealth%20Management%5D&f:Topic=%5BFinancial%20Planning%5D)
-+ [Weekly Wrap-Up](https://www.fisherinvestments.com/en-us/insights=%40publisheddate%20descending&numberOfResults=12&f:Topic=%5BWeekly%20Wrap-Up%5D)
-* [Institutional Investing Insights](https://www.fisherinvestments.com/en-us/insights=12&f:BusinessLine=%5BInstitutional%20Investing%5D) + ### [Institutional Investing Insights](https://www.fisherinvestments.com/en-us/insights=12&f:BusinessLine=%5BInstitutional%20Investing%5D)
-+ [Macro Insights](https://www.fisherinvestments.com/en-us/insights=%40publisheddate%20descending&numberOfResults=12&f:BusinessLine=%5BInstitutional%20Investing%5D&f:Topic=%5BMacro%20Insights%5D)
+In the very near term, volatility could persist—both to the downside and upside. But whether or not a new bear market low lies ahead, the conditions seem ripe for a new bull market. Pessimism reigns. Most banks are in excellent shape. The system has abundant liquidity. The stronger many can absorb the troubled few. Reacting to the latest troubles and recent returns means locking in those drawdowns and reducing exposure to the inevitable recovery. No one ever built or maintained wealth by selling low and buying high. Discipline and patience will likely win out in the end, in our view.
 
-...
+[i] "SVB Is Not a Canary in the Banking Coal Mine," Robert Armstrong, Financial Times, 3/15/2023.
 
-# [Resource Library](https://www.fisherinvestments.com/en-us/resource-library) Get help navigating the constantly changing market landscape with our articles and resources on popular topics.
-[Read Now](https://www.fisherinvestments.com/en-us/resource-library=relevancy&numberOfResults=12&f:ContentType=%5BInvestment%20Guides%5D "View all of our Free Guides")
-1. [Home](https://www.fisherinvestments.com/en-us "Home")
-  /
-2. [Insights](https://www.fisherinvestments.com/en-us/insights "Insights")
-  /
-3. Putting the Regional Bank Scare Into Perspective
-  /
-4. [Home](https://www.fisherinvestments.com/en-us "Home")
-  /
-
-...
-
-# Putting the Regional Bank Scare Into Perspective
-## The banking system is healthier than perceived.
-_*The content contained in this article represents only the opinions and viewpoints of the Fisher Investments editorial staff._
-
-...
-
-## Related Resources
-* [Fisher Investments Reviews: Last Week in Markets—July 6 - July 10](https://www.fisherinvestments.com/en-us/insights/week-at-a-glance/fisher-investments-reviews-last-week-in-markets-july-6-july-10)
-Weekly Wrap-Up [Fisher Investments Reviews: Last Week in Markets—July 6 - July 10](https://www.fisherinvestments.com/en-us/insights/week-at-a-glance/fisher-investments-reviews-last-week-in-markets-july-6-july-10)
-2026-07-13
-* [3 Things You Need to Know This Week | US Inflation, China GDP, US Retail Sales](https://www.fisherinvestments.com/en-us/insights/videos/fisher-investments-three-things-you-need-to-know-2026-7-13)
-Expert Commentary [3 Things You Need to Know This Week | US Inflation, China GDP, US Retail Sales](https://www.fisherinvestments.com/en-us/insights/videos/fisher-investments-three-things-you-need-to-know-2026-7-13)
-2026-07-13
-* [This Week in Review | Global PMIs, SpaceX, RMD Planning](https://www.fisherinvestments.com/en-us/insights/videos/fisher-investments-this-week-in-review-2026-07-10)
-Expert Commentary [This Week in Review | Global PMIs, SpaceX, RMD Planning](https://www.fisherinvestments.com/en-us/insights/videos/fisher-investments-this-week-in-review-2026-07-10)
-2026-07-10
-* [Trim Your Angst on Economic Measurement Tweaks](https://www.fisherinvestments.com/en-us/insights/market-commentary/trim-your-angst-on-economic-measurement-tweaks)
-Market Analysis [Trim Your Angst on Economic Measurement Tweaks](https://www.fisherinvestments.com/en-us/insights/market-commentary/trim-your-angst-on-economic-measurement-tweaks)
-2026-07-09
-
-...
-
-## Learn More
-* Insights [### Insights](https://www.fisherinvestments.com/en-us/insights)
-* Resource Library [### Resource Library](https://www.fisherinvestments.com/en-us/resource-library)
-* Legal Information [### Legal Information](https://www.fisherinvestments.com/en-us/legal)
+*The content contained in this article represents only the opinions and viewpoints of the Fisher Investments editorial staff.

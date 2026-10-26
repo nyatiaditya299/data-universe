@@ -1,40 +1,18 @@
-# EDGAR Filing Documents for 0000850529-20-000005
+# Fisher Investments' Form CRS and ADV
 
 Original URL: https://www.fisherinvestments.com/en-us/disclosures/form-crs-and-form-adv
+Publisher: Fisher Investments (Disclosures)
+Published: undated page
+Captured: 2026-10-26 from the public page. Text only.
 
-* [](https://www.sec.gov)
-* [SEC.gov](https://www.sec.gov)
-* EDGAR
-* [Latest Filings](https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent)
-* [Filings search tools](https://www.sec.gov/edgar/search-and-access)
+Form ADV is divided into three parts:
 
-# Filing Detail
-* SEC Home »
-* Company Search »
-* Current Page
-**Form 13F-HR** - Quarterly report filed by institutional managers, Holdings:
-**SEC Accession No.** 0000850529-20-000005
-Filing Date
-2020-04-28
-Accepted
-2020-04-28 12:39:38
-Documents
-2
-Period of Report
-2020-03-31
-Effectiveness Date
-2020-04-28
-Document Format Files
-| Seq | Description | Document | Type | Size |
-| 1 | primary_doc.html | 13F-HR |  |  |
-| 1 | primary_doc.xml | 13F-HR | 1888 |  |
-| 2 | 2020Q113F.html | INFORMATION TABLE |  |  |
-| 2 | 2020Q113F.xml | INFORMATION TABLE | 459425 |  |
-|  | Complete submission text file | 0000850529-20-000005.txt |  | 462571 |
-Mailing Address 5525 NW FISHER CREEK DRIVE CAMAS WA 98607
-Business Address 5525 NW FISHER CREEK DRIVE CAMAS WA 98607 650-851-3334
+Form ADV Part 1 is used by investment advisers to register with the Securities and Exchange Commission (SEC) and state securities authorities. It provides specific information about an investment adviser's business, ownership, clients, employees, business practices, affiliations, and any disciplinary events of the firm or its employees.
 
-...
+Form ADV Part 2 acts as a disclosure document for clients and prospective clients and is divided into two parts. Part A includes information such as the types of advisory services offered, the adviser's fee schedule, disciplinary information, conflicts of interest, business affiliations and other disclosures that may be of interest to you. Part B provides information on the business background of key advisory personnel. Investment advisers are required to deliver a copy of their ADV Part 2 to clients.
 
-EIN. : **202480800** | State of Incorp.: **DE** | Fiscal Year End: **1231**
-Type: **13F-HR** | Act: **34** | File No.: [**028-02499**](https://www.sec.gov/cgi-bin/browse-edgar?filenum=028-02499&action=getcompany) | Film No.: **20823582**
+Form ADV Part 3 (also referred to as Form CRS) is a new relationship summary form that covers a number of topics including the types of services offered, the fees and costs you will have to pay for those services, conflicts of interest the firm has, and other disclosures that may be of interest to you. Ultimately, this summary is designed to assist you in the process of evaluating financial services firms such as us.
+
+You can access a copy of the Fisher Investments Form CRS here.
+
+Before you hire someone to be your investment adviser, always ask for, and read carefully, all parts of the adviser's Form ADV. You can access all three parts of Fisher Investments Form ADV on the SEC's website here.
