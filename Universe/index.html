@@ -295,9 +295,9 @@ progress{display:none}
   <section class="view hidden" id="view-train">
     <div class="hero">
       <div>
-        <p class="eyebrow-mono">Step 03 // Corpus Indexing &amp; BM25 Optimization</p>
-        <h1>Build the universe, then train the ranking <span class="mono">80/20</span>.</h1>
-        <p class="lede">Index raw financial downloads into structured searchable passages, then grid-search <span class="combos-n">256</span> BM25 ranking configurations against an auto-generated ground-truth question set.</p>
+        <p class="eyebrow-mono">Step 03 // Corpus Indexing &amp; Ranking Model Training</p>
+        <h1>Build the universe, then train the ranking model <span class="mono">80/20</span>.</h1>
+        <p class="lede">Index raw financial downloads into structured searchable passages, grid-search <span class="combos-n">256</span> BM25 configurations, then train a neural re-ranking model, all against an auto-generated ground-truth question set.</p>
         <p class="note hosted-only">Online demo: building and training run only in the local version. The scores below were measured on the full local universe, which also includes the 26 Berkshire Hathaway letters left out of this online copy.</p>
       </div>
       <div class="statuspill" aria-label="Index telemetry">
@@ -338,7 +338,7 @@ progress{display:none}
           <div class="split">
             <div class="split-l"><span class="tr" id="splitTrainLbl">80% Train</span><span class="te" id="splitTestLbl">20% Hold-out Test</span></div>
             <div class="split-bar" role="img" aria-label="80 percent of questions tune the ranking, 20 percent are held out to score it"><div class="s-tr"></div><div class="s-te"></div></div>
-            <div class="split-n"><span>Tunes the BM25 weights</span><span>Blind evaluation score</span></div>
+            <div class="split-n"><span>Tunes BM25, trains the neural re-ranker</span><span>Blind evaluation score</span></div>
           </div>
           <div><div class="sec-l">Tuned parameter space</div><div class="params-grid" id="paramGrid"></div></div>
         </div>
@@ -352,7 +352,9 @@ progress{display:none}
     <details class="how"><summary>What “training” means here</summary><ol>
       <li>The agent's first job is finding the right source. That's what is trained: the search ranking that feeds both modes.</li>
       <li>Each question is generated from a document, so the correct answer source is known (“What happened to the 10-year Treasury yield in 2022?” → the 2022 fact sheet; four distinctive words from a Buffett passage → that letter).</li>
-      <li>The 80% training share picks the ranking settings with the best mean reciprocal rank. The 20% test share is never used for tuning; its score is the honest measure.</li>
+      <li><b>Stage 1:</b> the 80% training share picks the BM25 keyword-search settings with the best mean reciprocal rank (256 combinations).</li>
+      <li><b>Stage 2:</b> a small neural network (machine-learning model) is trained on the same 80% to re-order BM25's top 30 candidates. For each candidate it reads 18 signals (how much of the question is in the passage and title, year match, recency, document type, BM25 score) and learns which candidate is the right source. A validation slice of the 80% decides how long to train.</li>
+      <li>The 20% test share is never used for tuning or training; its score is the honest measure.</li>
       <li>Recall@3 matters most because every answer shows at least 3 options: it is the share of test questions whose true source appears among those options.</li>
     </ol></details>
   </section>

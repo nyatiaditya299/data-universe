@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   fredSeries, vixSeries, famaFrenchSeries, shillerSeries, spfSeries, worldBankSeries, seriesDocs, panelDocs, holdingsDocs,
   buildUniverseIndex, search, rankedOptions, makeQuestionSet, split8020, train, finalizeOptions, runTool, parseAnswer, DEFAULT_PARAMS,
-  gatherEntries, conclusionMessages, numbersToIds, clarifyQuestions, scopedQuery, evaluateClarify
+  gatherEntries, conclusionMessages, numbersToIds, clarifyQuestions, scopedQuery, evaluateClarify, RANKER_FEATURES
 } from './universe-core.mjs';
 
 test('fredSeries skips missing "." values and keeps dated numbers', () => {
@@ -187,6 +187,34 @@ test('train tunes on 80% and reports held-out 20% metrics', async () => {
   assert.equal(r.sizes.train + r.sizes.test, r.sizes.total);
   assert.equal(r.sizes.train, Math.round(r.sizes.total * 0.8));
   assert.ok(r.metrics.test.tuned.mrr >= r.metrics.test.default.mrr, JSON.stringify(r.metrics.test));
+});
+
+const SMALL_NET = { maxEpochs: 60, checkEvery: 20, hidden: 4 };
+
+test('neural re-ranker: trained on the 80% only, reproducible, and scored on the held-out 20%', async () => {
+  const index = tinyUniverse();
+  const opts = { seed: 3, perKind: 60, grid: { k1: [1.2], b: [0.75], titleBoost: [0], yearBoost: [0, 2] }, ranker: SMALL_NET };
+  const a = await train(index, opts), b = await train(index, opts);
+  assert.deepEqual(a.ranker.W1, b.ranker.W1);
+  assert.equal(a.ranker.features.length, RANKER_FEATURES.length);
+  assert.equal(a.ranker.trainedOn, a.sizes.train);
+  assert.ok(a.ranker.epochs >= 20 && a.ranker.epochs <= 60);
+  for (const k of ['hit1', 'hit3', 'mrr']) assert.ok(a.metrics.test.ml[k] >= 0 && a.metrics.test.ml[k] <= 1);
+  assert.equal(a.metrics.test.ml.n, a.sizes.test);
+});
+
+test('rerankHits keeps the same documents, orders them by the model, and leaves clarifying questions alone', async () => {
+  const index = tinyUniverse();
+  const r = await train(index, { seed: 3, perKind: 60, grid: { k1: [1.2], b: [0.75], titleBoost: [0], yearBoost: [2] }, ranker: SMALL_NET });
+  const params = { ...r.params, ranker: r.ranker };
+  const plain = search(index, 'unemployment rate 2015', r.params, { k: 400 }).map((h) => h.docId).sort();
+  const ranked = search(index, 'unemployment rate 2015', params, { k: 400 });
+  assert.deepEqual(ranked.map((h) => h.docId).sort(), plain);
+  const head = ranked.slice(0, r.ranker.candidates).map((h) => h.score);
+  for (let i = 1; i < head.length; i++) assert.ok(head[i - 1] >= head[i]);
+  assert.deepEqual(clarifyQuestions(index, 'rate', params), clarifyQuestions(index, 'rate', r.params));
+  const opts = rankedOptions(index, 'unemployment rate 2015', params, { k: 5 });
+  assert.ok(opts.length >= 3 && opts[0].relevance === 100);
 });
 
 test('finalizeOptions drops invented citations, sorts by relevance, pads to 3', () => {

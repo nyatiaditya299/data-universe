@@ -180,7 +180,7 @@ async function loadUniverse() {
   state.index = buildUniverseIndex(docs);
   if (state.status.index['model.json']) {
     state.model = JSON.parse(await getText(dir + 'model.json'));
-    state.params = { ...DEFAULT_PARAMS, ...state.model.params };
+    state.params = { ...DEFAULT_PARAMS, ...state.model.params, ranker: state.model.ranker };
   }
 }
 
@@ -190,10 +190,14 @@ async function runTraining() {
     const r = await train(state.index, { onProgress: (i, n, best) => {
       state.evalProg = { i, n };
       $('#evalText').textContent = `${i}/${n} evaluated`; $('#evalFill').style.width = `${(i / n) * 100}%`;
-      $('#buildLog').textContent = `Grid search ${i}/${n} · best training MRR so far ${best.metrics.mrr}`;
+      $('#buildLog').textContent = `Stage 1 · grid search ${i}/${n} · best training MRR so far ${best.metrics.mrr}`;
+    }, onModelProgress: (stage, ep, n, mrr) => {
+      $('#buildLog').textContent = stage === 'validate'
+        ? `Stage 2 · neural re-ranker: choosing the epoch count on a validation slice of the 80% · epoch ${ep}/${n} · best validation MRR ${mrr}`
+        : `Stage 2 · neural re-ranker: training on all training questions · epoch ${ep}/${n}`;
     } });
     r.trainedAt = new Date().toISOString();
-    state.model = r; state.params = { ...r.params };
+    state.model = r; state.params = { ...r.params, ranker: r.ranker };
     await api('/api/save?name=model.json', JSON.stringify(r));
     await refreshStatus();
     $('#buildLog').textContent = `Trained on ${r.sizes.train} questions, tested on ${r.sizes.test} held-out questions.`;
@@ -349,9 +353,9 @@ const PARAM_INFO = [
 ];
 
 /** Question-weighted accuracy of one document group on the held-out questions; null when it has none. */
-function groupStat(byKind, kinds, key) {
+function groupStat(byKind, kinds, key, final = 'tuned') {
   let n = 0, before = 0, after = 0;
-  for (const k of kinds) { const v = byKind[k]; if (v) { n += v.n; before += v.n * v.default[key]; after += v.n * v.tuned[key]; } }
+  for (const k of kinds) { const v = byKind[k]; if (v) { n += v.n; before += v.n * v.default[key]; after += v.n * (v[final] || v.tuned)[key]; } }
   return n ? { n, before: before / n, after: after / n } : null;
 }
 
@@ -375,26 +379,30 @@ function paramGridHtml(m) {
 }
 
 function resultsHtml(m) {
-  const t = m.metrics.test, top1 = t.tuned.hit1;
+  // "After training" is the neural re-ranker when the model has one (older model files only have the tuned BM25 weights).
+  const t = m.metrics.test, fin = t.ml ? 'ml' : 'tuned', rk = m.ranker, top1 = t[fin].hit1;
   const lift1 = Math.round(top1 * 100) - Math.round(t.default.hit1 * 100);
+  const cols = t.ml ? 5 : 4;
   const rows = METRICS.map((mt) => {
     const open = state.expanded.has(mt.key);
     const drill = DOC_GROUPS.map((g) => {
-      const s = groupStat(m.byKind, g.kinds, mt.key);
+      const s = groupStat(m.byKind, g.kinds, mt.key, fin);
       return s ? `<div class="drill-row"><div>${esc(g.label)}<small>n=${s.n}${s.n < 10 ? ' · indicative only' : ''}</small></div><span class="num muted">${showVal(s.before, mt.pct)}</span>${deltaBar(s.before, s.after, mt.pct, `${mt.name}, ${g.label}`)}</div>` : '';
     }).join('');
     return `<tr><td><button class="row-toggle" type="button" data-row="${mt.key}" aria-expanded="${open}" aria-controls="drill-${mt.key}"><span class="chev" aria-hidden="true">▸</span><span><b>${mt.name}</b><small>${mt.sub}</small></span></button></td>
-        <td class="r num muted">${showVal(t.default[mt.key], mt.pct)}</td><td>${deltaBar(t.default[mt.key], t.tuned[mt.key], mt.pct, mt.name)}</td><td class="r num muted col-train">${showVal(m.metrics.train.tuned[mt.key], mt.pct)}</td></tr>
-      <tr class="drill${open ? '' : ' hidden'}" id="drill-${mt.key}"><td colspan="4"><div class="drill-in">${drill}</div></td></tr>`;
+        <td class="r num muted">${showVal(t.default[mt.key], mt.pct)}</td><td>${deltaBar(t.default[mt.key], t[fin][mt.key], mt.pct, mt.name)}</td>${t.ml ? `<td class="r num muted col-train">${showVal(t.tuned[mt.key], mt.pct)}</td>` : ''}<td class="r num muted col-train">${showVal(m.metrics.train[fin][mt.key], mt.pct)}</td></tr>
+      <tr class="drill${open ? '' : ' hidden'}" id="drill-${mt.key}"><td colspan="${cols}"><div class="drill-in">${drill}</div></td></tr>`;
   }).join('');
   return `<div class="res-head"><div>
       <div class="res-title"><span class="label">Results · Hold-Out Benchmark</span><span class="badge ${lift1 > 0 ? 'pos' : ''}">${lift1 > 0 ? '+' : ''}${lift1} pts Recall@1 lift</span></div>
-      <p class="mono-line">Trained ${esc(new Date(m.trainedAt).toLocaleString())} · ${m.sizes.total} auto-generated questions → <b>${m.sizes.train} train (80%)</b> / <b>${m.sizes.test} test (20%)</b> · ${m.combos} settings tried.</p></div>
+      <p class="mono-line">Trained ${esc(new Date(m.trainedAt).toLocaleString())} · ${m.sizes.total} auto-generated questions → <b>${m.sizes.train} train (80%)</b> / <b>${m.sizes.test} test (20%)</b> · ${m.combos} BM25 settings tried${rk ? ` · neural re-ranker trained for ${rk.epochs} epochs` : ''}.</p></div>
       ${top1 >= 0.75 ? '<button class="secondary small" type="button" data-go="ask">Test in 1 · Ask →</button>' : ''}</div>
-    <div class="best"><span class="label">Winning weights</span>${PARAM_INFO.map((p) => `<span class="cfg" title="${esc(p.desc)}">${p.key === 'k1' ? 'k1' : p.key === 'b' ? 'b' : p.key === 'titleBoost' ? 'title_boost' : 'year_boost'}=${m.params[p.key]}</span>`).join('')}</div>
-    <div class="res-wrap"><table class="res-table"><thead><tr><th>Held-out test (20%)</th><th class="r">Before</th><th>After training</th><th class="r col-train">Train (80%)</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="muted small-text">Pin = score before training. Click a metric to see it by document type; groups with fewer than 10 held-out questions are indicative only.</p>
-    <div class="res-foot"><p>The tuned weights are saved and used by Step 1 (Ask). Scores come from auto-generated questions, so they measure finding the right source, not answer quality.</p><button class="primary" type="button" data-go="ask">Proceed to 1 · Ask with Tuned Weights →</button></div>
+    <div class="best"><span class="label">Stage 1 · BM25 weights</span>${PARAM_INFO.map((p) => `<span class="cfg" title="${esc(p.desc)}">${p.key === 'k1' ? 'k1' : p.key === 'b' ? 'b' : p.key === 'titleBoost' ? 'title_boost' : 'year_boost'}=${m.params[p.key]}</span>`).join('')}</div>
+    ${rk ? `<div class="best"><span class="label">Stage 2 · neural re-ranker</span><span class="cfg">${rk.features.length} features → ${rk.hidden} hidden → 1</span><span class="cfg">${rk.weights} weights</span><span class="cfg">top ${rk.candidates} candidates</span><span class="cfg" title="Chosen on a validation slice of the training questions (${rk.validation} questions)">epochs=${rk.epochs}</span></div>` : ''}
+    <div class="res-wrap"><table class="res-table"><thead><tr><th>Held-out test (20%)</th><th class="r">Default search</th><th>${t.ml ? 'Neural re-ranker' : 'After training'}</th>${t.ml ? '<th class="r col-train">Tuned BM25 only</th>' : ''}<th class="r col-train">Train (80%)</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="muted small-text">Pin = default search before any training. Click a metric to see it by document type; groups with fewer than 10 held-out questions are indicative only.</p>
+    <div class="res-foot"><p>The tuned weights${rk ? ' and the trained re-ranker are' : ' are'} saved and used by Step 1 (Ask). Scores come from auto-generated questions, so they measure finding the right source, not answer quality.</p><button class="primary" type="button" data-go="ask">Proceed to 1 · Ask with the trained model →</button></div>
+    ${rk ? `<details><summary>What the re-ranker looks at (${rk.features.length} features)</summary><ul class="files">${rk.features.map((f) => `<li>${esc(f)}</li>`).join('')}</ul><p class="muted small-text">Network: inputs standardised with the training mean and spread, one hidden layer of ${rk.hidden} tanh units plus a direct linear path, softmax over BM25's top ${rk.candidates} candidates, trained with Adam on the 80% (cross-entropy on the right source). The number of epochs was chosen on ${rk.validation} validation questions taken from the 80%; the 20% test set was used only for the scores above.</p></details>` : ''}
     <details><summary>Sample held-out questions</summary><ul class="files">${m.examples.map((e) => `<li>${esc(e.q)} <span class="muted">→ ${esc(e.gold)}</span></li>`).join('')}</ul></details>`;
 }
 
@@ -732,7 +740,7 @@ function buildTree(t) {
   }
   if (t.stage >= 3) {
     const p = t.params || {};
-    ret = box({ id: 'ret', k: 'retrieve', x: 370, w: 170, title: 'Search', lines: [t.trained ? 'trained BM25 ranking' : 'default BM25 ranking', `k1 ${p.k1} · b ${p.b}`, `title ${p.titleBoost} · year ${p.yearBoost}`, `${(t.docsN || 0).toLocaleString()} docs → ${n} entries`, `${t.searchMs} ms`], tip: `Search query: ${t.query}` });
+    ret = box({ id: 'ret', k: 'retrieve', x: 370, w: 170, title: 'Search', lines: [p.ranker ? 'BM25 + neural re-ranker' : t.trained ? 'trained BM25 ranking' : 'default BM25 ranking', `k1 ${p.k1} · b ${p.b}`, `title ${p.titleBoost} · year ${p.yearBoost}`, `${(t.docsN || 0).toLocaleString()} docs → ${n} entries`, `${t.searchMs} ms`], tip: `Search query: ${t.query}` });
     link(scope, ret, 'main');
   }
   if (t.stage >= 4) {
@@ -790,7 +798,7 @@ function renderTree() {
   // The same trace as plain text, for screen readers and for the AI log.
   const p = t.params || {}, n = t.entries.length, cited = t.concl ? t.concl.refs.length : 0, steps = [`Question: ${t.question}`];
   if (t.stage >= 2) steps.push(`Scope: ${t.scopeText || 'whole universe'} (${clarifyText(t)}).`);
-  if (t.stage >= 3) steps.push(`Search: ${t.trained ? 'trained' : 'default'} BM25 (k1 ${p.k1}, b ${p.b}, title boost ${p.titleBoost}, year boost ${p.yearBoost}) over ${(t.docsN || 0).toLocaleString()} documents found ${n} entries in ${t.searchMs} ms.`);
+  if (t.stage >= 3) steps.push(`Search: ${t.trained ? 'trained' : 'default'} BM25 (k1 ${p.k1}, b ${p.b}, title boost ${p.titleBoost}, year boost ${p.yearBoost})${p.ranker ? `, then the trained neural re-ranker (${p.ranker.features.length} features, ${p.ranker.hidden} hidden units) re-ordered the top ${p.ranker.candidates},` : ''} over ${(t.docsN || 0).toLocaleString()} documents found ${n} entries in ${t.searchMs} ms.`);
   if (t.stage >= 4) steps.push(n ? `Evidence handed to the model: ${t.entries.map((e, i) => `${i + 1}. ${e.title}`).join('; ')}.` : 'Nothing in the universe matched.');
   if (t.model) steps.push(t.model.status === 'error' ? `${t.model.label} failed: ${t.error}.` : `${t.model.label} ${t.model.status === 'writing' ? 'is reading the entries' : 'wrote the conclusion'}${t.tools?.length ? ` using ${t.tools.length} tool calls` : ''}.`);
   if (t.concl) steps.push(`Conclusion: ${t.concl.confidence} confidence, cites ${cited} of ${n} entries${t.concl.dropped ? `, ${t.concl.dropped} invalid citation${t.concl.dropped > 1 ? 's' : ''} dropped` : ''}.`);

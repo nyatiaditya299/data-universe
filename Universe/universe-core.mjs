@@ -365,10 +365,11 @@ export function latestFirst(index, hits, prep) {
   return out;
 }
 
-/** Top-k documents for a question, each with its best passage. */
+/** Top-k documents for a question, each with its best passage. With a trained `params.ranker`, BM25's top candidates are re-ranked by it. */
 export function search(index, query, params = DEFAULT_PARAMS, { k = 5, dataset = '', focus = '' } = {}) {
   const prep = prepareQuery(index, query);
-  return latestFirst(index, scoreDocs(index, prep, params, { dataset, focus }), prep).slice(0, k).map((h) => {
+  const hits = rerankHits(index, prep, scoreDocs(index, prep, params, { dataset, focus }), params.ranker);
+  return latestFirst(index, hits, prep).slice(0, k).map((h) => {
     const chunk = index.chunks[h.chunkIdx];
     return { ...h, chunk, doc: index.docs.get(h.docId) };
   });
@@ -433,7 +434,9 @@ const realScope = (v) => (v && v !== '*' ? v : '');
  * and never when the scope (or the question itself, for years) already fixes it.
  * Each option narrows the search with a filter, so the answer comes from fewer, closer documents.
  */
-export function clarifyQuestions(index, question, params = DEFAULT_PARAMS, { scope = {}, datasetNames = {}, k = 30, minShare = 0.12, dominant = 0.75, confident = 1.1, max = 3 } = {}) {
+export function clarifyQuestions(index, question, allParams = DEFAULT_PARAMS, { scope = {}, datasetNames = {}, k = 30, minShare = 0.12, dominant = 0.75, confident = 1.1, max = 3 } = {}) {
+  // Score shares and the "clear winner" threshold were calibrated on BM25 scores, so the re-ranker is left out here.
+  const { ranker, ...params } = allParams;
   const prep = prepareQuery(index, scopedQuery(question, scope));
   if (!prep.terms.length) return [];
   // At most 2 documents per measure, as in the ranked options, so one series' yearly sheets can't crowd out the others.
@@ -589,23 +592,219 @@ export async function tune(index, trainPrepared, { grid = GRID, onProgress = () 
   return { params: best.params, train: best.metrics, combos: combos.length };
 }
 
-/** Full training run: question set → 80/20 split → grid search on train → score default vs tuned on the held-out 20%. */
-export async function train(index, { seed = 2026, perKind = 120, grid = GRID, onProgress } = {}) {
+// ---------------------------------------------------------------- learned re-ranker (a small neural network, trained 80/20)
+
+/**
+ * Stage 2 of the search. BM25 (stage 1) proposes the top candidates; this network scores each (question, candidate)
+ * pair from the features below and re-orders them. Features are generic signals, not the wording of the generated
+ * questions, so the model cannot simply memorise the question templates. Two question-shape features ("names a year",
+ * "question length") were tried and dropped: the generated text questions never contain a year, so the network learned
+ * that a dated question never wants a letter or FOMC statement, which pushed FOMC statements out of "What did the FOMC
+ * say about inflation in 2023?".
+ */
+export const RANKER_FEATURES = Object.freeze([
+  'bm25 score / best', 'log bm25 score', '1 / BM25 rank', 'question weight in passage', 'share of question words in passage',
+  'question weight in title', 'year matches', 'year differs', 'document undated', 'recent and asked for recent', 'years before latest',
+  'log passage length',
+  'kind: text', 'kind: yearly fact sheet', 'kind: series summary', 'kind: country table', 'kind: 13F holdings', 'kind: 13F changes'
+]);
+const KINDS = ['text', 'series-year', 'series-summary', 'panel-year', 'holdings', 'holdings-change'];
+export const RANKER_DEFAULTS = Object.freeze({ candidates: 30, hidden: 12, maxEpochs: 400, checkEvery: 20, lr: 0.01, l2: 1e-4 });
+
+/** Feature vector for one candidate hit (rank i in the BM25 list whose best score is `top`). */
+export function rankerFeatures(index, prep, h, i, top) {
+  const doc = index.docs.get(h.docId), c = index.chunks[h.chunkIdx];
+  const row = prep.rows.get(h.chunkIdx);
+  const idfSum = prep.terms.reduce((s, t) => s + t.idf, 0) || 1;
+  let inPassage = 0, inPassageN = 0, inTitle = 0;
+  const title = index.titleTerms.get(h.docId);
+  prep.terms.forEach((t, k) => {
+    if (row && row[k]) { inPassage += t.idf; inPassageN++; }
+    if (title.has(t.t)) inTitle += t.idf;
+  });
+  const ys = index.years.get(h.docId);
+  const qy = prep.years.length > 0, hasYears = ys.size > 0;
+  const match = qy && prep.years.some((y) => ys.has(y));
+  const newest = hasYears ? Math.max(...ys) : 0;
+  return [
+    h.score / (top || 1), Math.log1p(Math.max(0, h.score)), 1 / (i + 1), inPassage / idfSum, inPassageN / (prep.terms.length || 1),
+    inTitle / idfSum, match ? 1 : 0, qy && hasYears && !match ? 1 : 0, hasYears ? 0 : 1,
+    prep.recent && hasYears && newest >= index.maxYear - 1 ? 1 : 0, hasYears ? Math.min(3, (index.maxYear - newest) / 10) : 0,
+    Math.log1p(c.len) / 6,
+    ...KINDS.map((k) => (doc.kind === k ? 1 : 0))
+  ];
+}
+
+/** BM25 candidates for one question, with their feature vectors. */
+function candidateSet(index, prep, params, n) {
+  const hits = scoreDocs(index, prep, params);
+  const cands = hits.slice(0, n), top = hits[0]?.score || 1;
+  return { hits, cands, X: cands.map((h, i) => rankerFeatures(index, prep, h, i, top)) };
+}
+
+/** Network output for one feature vector: a linear part plus one tanh hidden layer ("wide and deep"). */
+function netScore(m, x, hBuf) {
+  const F = x.length, H = m.hidden;
+  let s = m.b2;
+  for (let f = 0; f < F; f++) s += m.v[f] * ((x[f] - m.mean[f]) / m.std[f]);
+  for (let j = 0; j < H; j++) {
+    let z = m.b1[j];
+    for (let f = 0; f < F; f++) z += m.W1[j * F + f] * ((x[f] - m.mean[f]) / m.std[f]);
+    const a = Math.tanh(z);
+    if (hBuf) hBuf[j] = a;
+    s += m.w2[j] * a;
+  }
+  return s;
+}
+
+/**
+ * Re-orders BM25 hits with the trained network. The re-ranked candidates carry the model's score rescaled to 0.01–1
+ * (best = 1, weakest candidate = 0.01) as their score: softmax probabilities are too peaked to read as relevance bars.
+ */
+export function rerankHits(index, prep, hits, ranker) {
+  if (!ranker || !hits.length) return hits;
+  const n = Math.min(ranker.candidates, hits.length), top = hits[0].score || 1;
+  const scored = hits.slice(0, n).map((h, i) => ({ h, s: netScore(ranker, rankerFeatures(index, prep, h, i, top)) }));
+  const max = Math.max(...scored.map((x) => x.s)), min = Math.min(...scored.map((x) => x.s));
+  const head = scored.sort((a, b) => b.s - a.s).map((x) => ({ ...x.h, bm25: x.h.score, model: x.s, score: 0.01 + (0.99 * (x.s - min)) / (max - min || 1) }));
+  return [...head, ...hits.slice(n).map((h) => ({ ...h, bm25: h.score, score: 0 }))];
+}
+
+/** Hit@1, Hit@3 and MRR@10 of the re-ranked list, on prepared questions. */
+export function evaluateRanker(index, prepared, params, ranker) {
+  let h1 = 0, h3 = 0, mrr = 0;
+  for (const { prep, gold } of prepared) {
+    const rank = rerankHits(index, prep, scoreDocs(index, prep, params), ranker).slice(0, 10).findIndex((h) => h.docId === gold);
+    if (rank === 0) h1++;
+    if (rank >= 0 && rank < 3) h3++;
+    if (rank >= 0) mrr += 1 / (rank + 1);
+  }
+  const n = prepared.length || 1;
+  return { n: prepared.length, hit1: round(h1 / n, 3), hit3: round(h3 / n, 3), mrr: round(mrr / n, 3) };
+}
+
+function initNet(F, H, seed) {
+  const rand = rng(seed);
+  const u = (s) => (rand() * 2 - 1) * s;
+  // Training runs on already-standardised features, so the net's own scaling starts as the identity.
+  return { hidden: H, mean: Array(F).fill(0), std: Array(F).fill(1), v: Array.from({ length: F }, () => 0), W1: Array.from({ length: F * H }, () => u(1 / Math.sqrt(F))), b1: Array.from({ length: H }, () => 0), w2: Array.from({ length: H }, () => u(0.1)), b2: 0 };
+}
+
+/**
+ * Trains the network for `epochs` full passes with Adam. Loss per question: softmax cross-entropy over its candidates
+ * with the right source as the target (listwise). Questions whose right source is not among the candidates are skipped.
+ */
+async function fitNet(sets, net, { epochs, lr, l2, onEpoch = () => {} }) {
+  const params = ['v', 'W1', 'b1', 'w2'];
+  const mom = {}, vel = {};
+  for (const p of params) { mom[p] = new Float64Array(net[p].length); vel[p] = new Float64Array(net[p].length); }
+  const F = net.v.length, H = net.hidden, hBuf = new Float64Array(H);
+  const usable = sets.filter((s) => s.goldIdx >= 0 && s.Xn.length > 1);
+  for (let ep = 1; ep <= epochs; ep++) {
+    const g = { v: new Float64Array(F), W1: new Float64Array(F * H), b1: new Float64Array(H), w2: new Float64Array(H) };
+    for (const s of usable) {
+      const acts = s.Xn.map(() => new Float64Array(H));
+      const sc = s.Xn.map((x, i) => { const out = netScore(net, x, hBuf); acts[i].set(hBuf); return out; });
+      const max = Math.max(...sc), ex = sc.map((v) => Math.exp(v - max)), z = ex.reduce((a, b) => a + b, 0);
+      s.Xn.forEach((x, i) => {
+        const d = ex[i] / z - (i === s.goldIdx ? 1 : 0);
+        if (!d) return;
+        for (let f = 0; f < F; f++) g.v[f] += d * x[f];
+        for (let j = 0; j < H; j++) {
+          const a = acts[i][j];
+          g.w2[j] += d * a;
+          const dz = d * net.w2[j] * (1 - a * a);
+          g.b1[j] += dz;
+          for (let f = 0; f < F; f++) g.W1[j * F + f] += dz * x[f];
+        }
+      });
+    }
+    for (const p of params) {
+      const w = net[p], gp = g[p];
+      for (let k = 0; k < w.length; k++) {
+        const grad = gp[k] / (usable.length || 1) + (p === 'b1' ? 0 : l2 * w[k]);
+        mom[p][k] = 0.9 * mom[p][k] + 0.1 * grad;
+        vel[p][k] = 0.999 * vel[p][k] + 0.001 * grad * grad;
+        w[k] -= (lr * (mom[p][k] / (1 - 0.9 ** ep))) / (Math.sqrt(vel[p][k] / (1 - 0.999 ** ep)) + 1e-8);
+      }
+    }
+    if (await onEpoch(ep) === false) break;
+  }
+  return net;
+}
+
+/**
+ * Trains the re-ranker on the training questions only. A seeded 20% of them is set aside as a validation set to choose
+ * how many epochs to train (early stopping); the network is then retrained on all training questions for that many.
+ * The held-out test questions are never seen here.
+ */
+export async function trainRanker(index, trainPrepared, params, { seed = 2026, onProgress = () => {}, ...opt } = {}) {
+  const o = { ...RANKER_DEFAULTS, ...opt };
+  const raw = trainPrepared.map((it) => {
+    const { cands, X } = candidateSet(index, it.prep, params, o.candidates);
+    return { X, goldIdx: cands.findIndex((h) => h.docId === it.gold) };
+  });
+  // Standardise each feature with the training mean and spread (stored with the model).
+  const F = RANKER_FEATURES.length, all = raw.flatMap((r) => r.X);
+  const mean = Array.from({ length: F }, (_, f) => all.reduce((s, x) => s + x[f], 0) / (all.length || 1));
+  const std = mean.map((m, f) => Math.sqrt(all.reduce((s, x) => s + (x[f] - m) ** 2, 0) / (all.length || 1)) || 1);
+  const norm = (r) => ({ ...r, Xn: r.X.map((x) => x.map((v, f) => (v - mean[f]) / std[f])) });
+  const sets = raw.map(norm);
+  const evalSets = (net, ss) => {
+    let mrr = 0;
+    for (const s of ss) {
+      if (s.goldIdx < 0) continue;
+      const sc = s.Xn.map((x) => netScore(net, x));
+      const g = sc[s.goldIdx];
+      const rank = sc.filter((v, i) => v > g || (v === g && i < s.goldIdx)).length;
+      if (rank < 10) mrr += 1 / (rank + 1);
+    }
+    return mrr / (ss.length || 1);
+  };
+  // 1) choose the epoch count on a validation slice of the training questions
+  const shuffled = shuffle(sets, rng(seed + 7)), cut = Math.round(shuffled.length * 0.8);
+  const inner = shuffled.slice(0, cut), val = shuffled.slice(cut);
+  let best = { epochs: o.checkEvery, mrr: -1 };
+  const probe = initNet(F, o.hidden, seed);
+  await fitNet(inner, probe, { ...o, epochs: o.maxEpochs, onEpoch: async (ep) => {
+    if (ep % o.checkEvery) return;
+    const mrr = evalSets(probe, val);
+    if (mrr > best.mrr + 1e-9) best = { epochs: ep, mrr };
+    onProgress('validate', ep, o.maxEpochs, round(best.mrr, 3));
+    await new Promise((r) => setTimeout(r, 0));
+  } });
+  // 2) retrain on all training questions for the chosen number of epochs
+  const net = initNet(F, o.hidden, seed);
+  await fitNet(sets, net, { ...o, epochs: best.epochs, onEpoch: async (ep) => {
+    if (ep % o.checkEvery === 0 || ep === best.epochs) { onProgress('fit', ep, best.epochs); await new Promise((r) => setTimeout(r, 0)); }
+  } });
+  const r5 = (a) => Array.from(a, (v) => round(v, 5));
+  return {
+    type: 'neural re-ranker', features: [...RANKER_FEATURES], candidates: o.candidates, hidden: o.hidden,
+    mean: r5(mean), std: r5(std), v: r5(net.v), W1: r5(net.W1), b1: r5(net.b1), w2: r5(net.w2), b2: 0,
+    epochs: best.epochs, validationMrr: round(best.mrr, 3), validation: val.length, trainedOn: sets.length,
+    weights: net.v.length + net.W1.length + net.b1.length + net.w2.length
+  };
+}
+
+/** Full training run: question set → 80/20 split → grid search and neural re-ranker on train → score all three on the held-out 20%. */
+export async function train(index, { seed = 2026, perKind = 120, grid = GRID, onProgress, onModelProgress, ranker: rankerOpts = {} } = {}) {
   const items = makeQuestionSet(index, { seed, perKind });
   const { train: tr, test: te } = split8020(items, seed);
   const trP = prepareSet(index, tr), teP = prepareSet(index, te);
   const tuned = await tune(index, trP, { grid, onProgress });
+  const ranker = await trainRanker(index, trP, tuned.params, { seed, onProgress: onModelProgress, ...rankerOpts });
   const byKind = {};
   for (const kind of [...new Set(te.map((t) => t.kind))]) {
     const sub = teP.filter((t) => t.kind === kind);
-    byKind[kind] = { n: sub.length, default: evaluate(index, sub, DEFAULT_PARAMS), tuned: evaluate(index, sub, tuned.params) };
+    byKind[kind] = { n: sub.length, default: evaluate(index, sub, DEFAULT_PARAMS), tuned: evaluate(index, sub, tuned.params), ml: evaluateRanker(index, sub, tuned.params, ranker) };
   }
   return {
-    params: tuned.params, defaults: { ...DEFAULT_PARAMS }, seed, grid, combos: tuned.combos,
+    params: tuned.params, defaults: { ...DEFAULT_PARAMS }, seed, grid, combos: tuned.combos, ranker,
     sizes: { total: items.length, train: tr.length, test: te.length, docs: index.docs.size, chunks: index.chunks.length },
     metrics: {
-      train: { default: evaluate(index, trP, DEFAULT_PARAMS), tuned: tuned.train },
-      test: { default: evaluate(index, teP, DEFAULT_PARAMS), tuned: evaluate(index, teP, tuned.params) }
+      train: { default: evaluate(index, trP, DEFAULT_PARAMS), tuned: tuned.train, ml: evaluateRanker(index, trP, tuned.params, ranker) },
+      test: { default: evaluate(index, teP, DEFAULT_PARAMS), tuned: evaluate(index, teP, tuned.params), ml: evaluateRanker(index, teP, tuned.params, ranker) }
     },
     byKind, examples: te.slice(0, 12)
   };

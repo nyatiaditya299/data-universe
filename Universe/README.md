@@ -18,7 +18,7 @@ Open <http://localhost:8010/Universe/>. Internet access is needed for downloads 
 
 The sidebar lists **Ask first (01), then Datasets (02), then Build & train (03)**. The page opens on Ask once a universe is built; on first use it opens on Datasets, and you work through Datasets, then Build & train, then Ask.
 
-Tests: <http://localhost:8010/Universe/run-tests.html> (16 tests of the core logic).
+Tests: <http://localhost:8010/Universe/run-tests.html> (29 tests of the core logic).
 
 ## Datasets (catalog.json)
 
@@ -51,7 +51,20 @@ The agent's answers depend on finding the right sources first, so the ranking is
 1. **Question set.** Up to 120 questions per document type are generated from the universe, each with a known correct source. Structured data gets templated analyst questions ("What happened to the 10-year Treasury yield in 2022?"). Text gets a pseudo-question made of the four most distinctive words in one passage.
 2. **80/20 split** (seeded, reproducible). 80% train, 20% held out.
 3. **Grid search on the 80%** over 256 ranking settings: BM25 `k1` and `b`, a title-match boost and a year-match boost. Objective: mean reciprocal rank.
-4. **Score on the 20%** with the default settings and the tuned ones. The dashboard shows both, by question type.
+4. **Neural re-ranker (stage 2, a machine-learning model) on the same 80%.** BM25 with the tuned settings proposes its top 30 candidates per question. A small neural network scores each (question, candidate) pair from 18 generic features: BM25 score and rank, how much of the question (idf-weighted) appears in the passage and in the title, year match or mismatch, recency, passage length, and the document type. Architecture: standardised inputs → one hidden layer of 12 tanh units plus a direct linear path → one score (258 weights). Loss: softmax cross-entropy over the candidates with the right source as the target (listwise learning to rank), Adam, L2 1e-4, seeded so runs are reproducible. A seeded 20% of the training questions is set aside to choose the number of epochs (checked every 20, up to 400); the network is then retrained on all training questions for that many. The test 20% is never touched. Written in plain JavaScript (`trainRanker`, `rerankHits` in `universe-core.mjs`); training takes about 2 minutes on this PC.
+5. **Score on the 20%** with the default settings, the tuned BM25 settings and the re-ranker. The dashboard shows all three, by question type. Ask uses BM25 plus the re-ranker; clarifying questions stay on BM25 scores, because their thresholds were calibrated on those.
+
+**Neural re-ranker, held-out 20% (81 questions), 26 Oct 2026:**
+
+| | Default BM25 | Tuned BM25 | Neural re-ranker |
+|---|---|---|---|
+| Right source ranked #1 | 72.8% | 82.7% | **88.9%** |
+| Right source in top 3 | 84.0% | 92.6% | **92.6%** |
+| Mean reciprocal rank | 0.785 | 0.876 | **0.907** |
+
+280 epochs, chosen on the validation slice (validation MRR 0.905). Training-set MRR is 0.922, close to the test 0.907, so it is not badly overfitted. The gain comes from country-comparison tables (ranked #1: 79% → 100%) and 13F filings; on letter and FOMC passages it is no better than tuned BM25 (64% ranked #1), and top-3 is unchanged.
+
+**Bias found and removed.** A first version also had two question-shape features (whether the question names a year, its length). It scored the same on the test set, but on "What did the FOMC say about inflation in 2023?" it pushed every FOMC statement out of the top 5: the generated text questions never contain a year, so it had learned that a dated question never wants a letter or statement. Those two features were dropped (an experiment with four feature sets, same split); the FOMC May 2023 statement is back in the top 5 at no cost on the test set. Caveat that remains: the questions are auto-generated, so the network can still learn habits of the question generator. Real analyst questions are needed to confirm the gain.
 
 Latest run (26 Oct 2026, after adding the Fisher documents; 407 questions including 13F, 326 train / 81 test, 3,487 documents, 6,109 passages): held-out *right source in top 3* went from 84% to 93%, *ranked #1* from 73% to 83%, mean reciprocal rank from 0.79 to 0.88. Chosen settings: k1 0.9, b 0.4, title boost 1, year boost 1. (Run before the Fisher documents: 77% to 91% top 3, 62% to 80% #1, k1 1.2, title boost 2. The untrained baseline moved because 4 of the questions are new.)
 
