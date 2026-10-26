@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nyati_Aditya_Fisher_AILog</title>
+<style>
+@page{size:Letter;margin:.4in .45in}
+*{box-sizing:border-box}
+body{margin:0;font:7.8pt/1.26 Arial,Helvetica,sans-serif;color:#1b1b1b}
+h1{font:700 13pt Georgia,serif;margin:0}
+.sub{margin:1px 0 4px;color:#444;font-size:7.7pt}
+h2{font:700 8.4pt Arial;text-transform:uppercase;letter-spacing:.05em;margin:5px 0 2px;padding-bottom:1px;border-bottom:1.2px solid #1b3b2b;color:#1b3b2b}
+table{width:100%;border-collapse:collapse}
+th,td{border:.6pt solid #b9b6aa;padding:1.8px 4px;vertical-align:top;text-align:left}
+th{background:#eceae2;font-size:7.6pt}
+td.k{width:15%;font-weight:700}
+.w1{width:3%}.w2{width:33%}.w3{width:64%}
+ul{margin:1px 0 0;padding-left:11px}li{margin:0 0 1px}
+.cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}.cols h3{font:700 8pt Arial;margin:0 0 1px}
+.foot{margin-top:4px;padding-top:2px;border-top:.6pt solid #999;color:#444;font-size:7.4pt}
+.note{margin:2px 0 0;color:#555;font-size:7.3pt}
+code{font:7.3pt Consolas,monospace}
+</style>
+</head>
+<body>
+<h1>AI Log: Data Universe (Fisher Investments, wealth-management track)</h1>
+<p class="sub">Aditya Nyati · MS Finance, UT Dallas · AI in Finance Week 2026 · all work created 25–26 Oct 2026 · public data only; no licensed or confidential data was used or sent to any AI tool</p>
+
+<h2>1. Task, tools and why</h2>
+<table>
+<tr><td class="k">Claude (Anthropic), via Claude Code</td><td><b>Task:</b> write, run and test the whole product (downloaders, parsers, ranking, interface), and drive a browser to check the running page. Opus 5.5 for the data, ranking, conclusion and clarifying-question work; Sonnet 5.5 for the interface redesign (to a design spec I supplied), sidebar, background and trace tree. <b>Why:</b> it runs the code and tests on my PC and looks at the real page, so each change was checked, not only written. I set the requirements and made the choices below.</td></tr>
+<tr><td class="k">GPT-OSS 20B (open-weight), free hosted by Pollinations</td><td><b>Task:</b> inside the product, read the 8–10 retrieved entries and write a short conclusion that cites them by number. <b>Why:</b> free, no account, open weights, so the same step can later run on a firm's own machine. Only public data and my public test questions were sent to it. Claude as the conclusion writer stays an optional setting.</td></tr>
+</table>
+
+<h2>2. Key prompts, inputs and outputs</h2>
+<table>
+<tr><th class="w1">#</th><th class="w2">Prompt / input</th><th class="w3">Output and verdict</th></tr>
+<tr><td>1</td><td>To Claude: “Build a dashboard that downloads public datasets; a backend agent that works only on that universe, trained 80/20, giving at least 3 options in descending relevance.”</td><td>Local dashboard: 15 datasets, including Fisher Investments' own published documents → 3,487 documents / 6,109 passages. Ranking tuned on 326 auto-generated questions, tested on 81 held back. <b>Accepted</b>, retrained after the bug in check 2 and after adding the Fisher documents.</td></tr>
+<tr><td>2</td><td>To Claude: “Set the SEC User-Agent to my email, then download and test the 13F holdings.”</td><td>4 quarters each for Fisher (about 1,037 positions, $335.8B) and Berkshire. <b>Accepted</b> only after check 1.</td></tr>
+<tr><td>3</td><td>To Claude: “build the conclusion window by connecting to free hosted open source gen ai model” (after asking for a conclusion drawn from all relevant entries, not just excerpts).</td><td>Conclusion window with numbered, clickable citations and a confidence label. <b>Changed:</b> default writer moved from a paid Claude agent to the free open model.</td></tr>
+<tr><td>4</td><td>To Claude: “i want the chatbot to ask clarifying questions to narrow down the scope of the answers thus increasing the precision of the answers”</td><td>Up to 3 questions (source, measure, period) built from the data. Simulated analyst test: right source ranked first 80% → 88%. <b>Accepted</b>; it is an upper bound.</td></tr>
+<tr><td>5</td><td><b>In-product prompt to GPT-OSS 20B.</b> System: “use ONLY the numbered sources… never add facts… no investment advice.” User: <i>Is the Shiller CAPE high compared with history?</i> + 8 numbered entries; “after every claim, cite source numbers in square brackets.”</td><td>“…30.81 in September 2023 sits above the historical average of 17.40 and is higher than 95 % of all observations since 1881 [1]… below the all-time peak of 44.20 in December 1999 [1]… [2]… [3].” <b>Accepted</b> after checks 1 and 4.</td></tr>
+<tr><td>6</td><td>To Claude: “in the ask tab also include and have a graphical thinking tree representing how the model approached the answer”</td><td>Tree of scope → search → entries → model → conclusion, cited entries highlighted. <b>Changed:</b> labelled a process trace, because it cannot show the model's inner reasoning.</td></tr>
+</table>
+
+<h2>3. Checks</h2>
+<table>
+<tr><td class="k">1. Against source</td><td>Berkshire Q2 2026 13F total recomputed as $299.25B = the raw SEC filing. The CAPE conclusion's figures (30.81, average 17.40, 44.20 in Dec 1999, above 95% of readings) = the cited data sheet.</td></tr>
+<tr><td class="k">2. Edge case</td><td>“What did the FOMC say about inflation in 2023?” → the model said the statements held no inflation comment. Cause: a press-contact line (“Implementation Note issued … 2023”) outranked the real statements. Removed it; retest cited the May, June, July and September 2023 statements (4 valid citations). Regression test added.</td></tr>
+<tr><td class="k">3. Held-out test</td><td>81 unseen questions, untrained vs trained ranking: right source in top 3 <b>84% → 93%</b>, ranked first <b>73% → 83%</b>. Limit: questions are auto-generated, so this tests finding the source, not answer quality.</td></tr>
+<tr><td class="k">4. Invented citations</td><td>A made-up citation is stripped and counted (unit test). In about half of my live test runs the model skipped citations (and twice said no inflation target was mentioned although the statements state 2%), so an answer with no valid citation is now forced to “low confidence”. 27 automated tests pass.</td></tr>
+<tr><td class="k">5. Source integrity</td><td>Loading Fisher's documents, I found two files labelled as Fisher articles that held SEC 13F tables, and two more with only site menus. I replaced them with the real page text; a question on Fisher's top-down process now returns that page first and the conclusion cites it.</td></tr>
+</table>
+<p class="note">Prompts 3, 4 and 6 are quoted as typed; prompts 1 and 2 are summarised from the project handover.</p>
+
+<h2>4. Accepted, changed, rejected</h2>
+<div class="cols">
+<div><h3>Accepted</h3><ul><li>Retrieval plus a cited conclusion, not fine-tuning.</li><li>Ranked options come from the search, not the model.</li><li>A free open model, for public data only.</li></ul></div>
+<div><h3>Changed</h3><ul><li>Prompt uses source numbers [1], [2] mapped back to real passage IDs.</li><li>Uncited conclusion capped at low confidence.</li><li>FOMC boilerplate cut; free model made the default.</li></ul></div>
+<div><h3>Rejected</h3><ul><li>Any sentence without a valid source, and “not mentioned” claims left unchecked.</li><li>IMF and AAII data (downloads blocked, HTTP 403); bank outlook PDFs (reuse terms, manual only).</li><li>Fine-tuning; any confidential data in a public AI tool.</li></ul></div>
+</div>
+
+<p class="foot"><b>Limits:</b> no access to a firm's internal advice data, so this runs on public proxies; the free model is rate-limited (one reply per 30 s) and sends text to a third party, so a firm would host a model locally for speed and data protection. 13F filings are delayed snapshots with no reasons. Nothing here is investment advice.</p>
+</body>
+</html>
