@@ -1,0 +1,11 @@
+# Local settings (may hold API keys) and downloaded data: recreated by the dashboard
+Universe/settings.json
+Universe/data/
+Universe/my-docs/*
+!Universe/my-docs/.gitkeep
+
+# Machine-specific preview config
+.claude/
+
+# Built archives
+*.zip
