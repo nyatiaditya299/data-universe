@@ -3,6 +3,26 @@
   "note": "Public datasets the dashboard can download into Universe/data/. serve.ps1 downloads them; universe-ui.mjs parses them into the searchable universe. Edit this file to add series, managers, or years.",
   "datasets": [
     {
+      "id": "fisher-public",
+      "group": "Focus company: Fisher Investments",
+      "name": "Fisher Investments: public commentary, process and filings",
+      "publisher": "Fisher Investments (fisherinvestments.com) and the SEC",
+      "homepage": "https://www.fisherinvestments.com/en-us/insights/market-commentary",
+      "license": "Public web pages and SEC filings, kept as local text copies with source links. Fisher's commentary is the opinion of its editorial staff, not its investment committee. Quote briefly and cite; do not redistribute.",
+      "description": "Seven documents Fisher published: three dated market-commentary articles (March 2020 stimulus, September 2022 CPI, March 2023 regional banks), its top-down investment process, the Form CRS and ADV disclosure page, Form CRS (February 2026) and Form ADV Part 2A (February 2026). No internal research, client data or committee records.",
+      "type": "local",
+      "folder": "../Source_Documents/Fisher_Investments",
+      "include": [
+        { "file": "2020-03-27-fisher-stimulus.md", "title": "Fisher Investments commentary: Around the World in Coronavirus 'Stimulus'", "date": "2020-03-27", "source": "https://www.fisherinvestments.com/en-us/insights/market-commentary/around-the-world-in-coronavirus-stimulus", "doctype": "Market commentary" },
+        { "file": "2022-09-13-fisher-cpi.md", "title": "Fisher Investments commentary: Our Take on Tuesday's Sharp Swings and CPI", "date": "2022-09-13", "source": "https://www.fisherinvestments.com/en-us/insights/market-commentary/our-take-on-tuesdays-sharp-swings-and-cpi", "doctype": "Market commentary" },
+        { "file": "2023-03-16-fisher-regional-banks.md", "title": "Fisher Investments commentary: Putting the Regional Bank Scare Into Perspective", "date": "2023-03-16", "source": "https://www.fisherinvestments.com/en-us/insights/market-commentary/putting-the-regional-bank-scare-into-perspective", "doctype": "Market commentary" },
+        { "file": "fisher-public-top-down-process.md", "title": "Fisher Investments top-down investment process", "date": "", "source": "https://www.fisherinvestments.com/en-us/institutional-investing/top-down-investment-process", "doctype": "Investment process" },
+        { "file": "Fisher_disclosure_page.md", "title": "Fisher Investments disclosures: Form CRS and Form ADV", "date": "", "source": "https://www.fisherinvestments.com/en-us/disclosures/form-crs-and-form-adv", "doctype": "Disclosure" },
+        { "file": "Fisher_Form_CRS_2026_extracted.md", "title": "Fisher Investments Form CRS (client relationship summary)", "date": "2026-02-11", "source": "https://www.fisherinvestments.com/en-us/-/media/project/fisherinvestments/fisherinvestments/document/na/general/forms/form-crs-02-12-2026-v2.ashx", "doctype": "Regulatory filing" },
+        { "file": "Fisher_Form_ADV_Part_2A_2026-02-11.pdf", "title": "Fisher Investments Form ADV Part 2A (firm brochure)", "date": "2026-02-11", "source": "https://files.adviserinfo.sec.gov/IAPD/Content/Common/crd_iapd_Brochure.aspx?BRCHR_VRSN_ID=1008280", "doctype": "Regulatory filing" }
+      ]
+    },
+    {
       "id": "fred-rates",
       "group": "US rates & credit",
       "name": "FRED: US interest rates and yield curve",

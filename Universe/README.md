@@ -35,7 +35,10 @@ Tests: <http://localhost:8010/Universe/run-tests.html> (16 tests of the core log
 | Berkshire letters | Berkshire Hathaway | Shareholder letters 2000–2025 |
 | World Bank macro | World Bank | GDP growth, inflation, unemployment, current account for 8 economies |
 | SEC 13F | SEC EDGAR | Last 4 quarterly holdings for Fisher Investments and Berkshire, with buys/sells (needs your SEC User-Agent) |
+| **Fisher Investments public documents** (focus company) | fisherinvestments.com, SEC IAPD | 7 documents Fisher published: 3 dated commentary articles (Mar 2020, Sep 2022, Mar 2023), its top-down process, the disclosure page, Form CRS and Form ADV Part 2A (Feb 2026). Loaded from `Source_Documents\Fisher_Investments`; click *Load*. |
 | Your documents | `Universe\my-docs` | Any PDF/TXT/MD/HTML/CSV you add; a file name starting `2024-03-15` sets the date |
+
+The Fisher set is a curated "local" dataset: `catalog.json` lists each file with its title, publication date and source link (an `include` list), and `serve.ps1` loads only those files from a folder inside the project. Fisher's website refuses command-line downloads (HTTP 403), so the page texts were read in a browser and saved as text copies; the Form ADV PDF is the SEC's original. Documents are cited with their date, and the Fisher commentary is Fisher's editorial opinion, not its investment committee's view. Keep to short quotes with a citation.
 
 To add more: edit `catalog.json` (FRED series ids, 13F managers by CIK, World Bank indicators), then download and rebuild. IMF DataMapper and AAII block automated downloads; bank outlooks (J.P. Morgan, Vanguard, BlackRock) should be saved by hand into `my-docs`.
 
@@ -48,7 +51,7 @@ The agent's answers depend on finding the right sources first, so the ranking is
 3. **Grid search on the 80%** over 256 ranking settings: BM25 `k1` and `b`, a title-match boost and a year-match boost. Objective: mean reciprocal rank.
 4. **Score on the 20%** with the default settings and the tuned ones. The dashboard shows both, by question type.
 
-Latest run (26 Oct 2026, after the FOMC press-tail fix; 403 questions including 13F, 322 train / 81 test, 5,984 passages): held-out *right source in top 3* went from 77% to 91%, *ranked #1* from 62% to 80%, mean reciprocal rank from 0.70 to 0.87. Chosen settings: k1 1.2, b 0.4, title boost 2, year boost 1. (Previous run, 25 Oct: 90% top 3, 79% #1, k1 0.9, title boost 1.)
+Latest run (26 Oct 2026, after adding the Fisher documents; 407 questions including 13F, 326 train / 81 test, 3,487 documents, 6,109 passages): held-out *right source in top 3* went from 84% to 93%, *ranked #1* from 73% to 83%, mean reciprocal rank from 0.79 to 0.88. Chosen settings: k1 0.9, b 0.4, title boost 1, year boost 1. (Run before the Fisher documents: 77% to 91% top 3, 62% to 80% #1, k1 1.2, title boost 2. The untrained baseline moved because 4 of the questions are new.)
 
 13F holdings were downloaded and checked on 25 Oct 2026: 4 quarters each for Fisher (about 1,037 positions, $336B as of 2026-06-30) and Berkshire (29 positions, $299B). Berkshire's total matches the raw filing.
 

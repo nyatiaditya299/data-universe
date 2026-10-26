@@ -125,14 +125,17 @@ async function parseDataset(ds, log) {
     }
     docs.push(...holdingsDocs(filings, { dataset: ds.id }));
   } else if (ds.type === 'local') {
+    // Curated sets (such as the Fisher documents) carry their own title, date and source link; a plain folder derives them from the file name.
+    const stripHeader = (t) => t.replace(/^#[^\n]*\n+(?:(?:Original URL|Publisher|Published|Captured):[^\n]*\n)+\n*/, '');
     for (const f of files) {
       const path = f.path, ext = path.split('.').pop().toLowerCase();
-      const date = (f.name.match(/^(\d{4}-\d{2}(?:-\d{2})?)/) || [])[1] || '';
-      let text = '', title = f.name.replace(/\.[^.]+$/, '').replace(/^\d{4}-\d{2}(-\d{2})?[ _-]*/, '').replace(/[_-]+/g, ' ');
+      log(`Reading ${f.title || f.name}…`);
+      const date = f.date !== undefined ? f.date : (f.name.match(/^(\d{4}-\d{2}(?:-\d{2})?)/) || [])[1] || '';
+      let text = '', title = f.title || f.name.replace(/\.[^.]+$/, '').replace(/^\d{4}-\d{2}(-\d{2})?[ _-]*/, '').replace(/[_-]+/g, ' ');
       if (ext === 'pdf') text = await pdfText(await getBytes(path));
-      else if (ext === 'html' || ext === 'htm') { const h = htmlText(await getText(path)); text = h.text; title = h.title || title; }
-      else text = await getText(path);
-      docs.push({ id: `T:my-docs:${f.name}`, dataset: ds.id, kind: 'text', title, date, url: path, source: '', text });
+      else if (ext === 'html' || ext === 'htm') { const h = htmlText(await getText(path)); text = h.text; if (!f.title) title = h.title || title; }
+      else text = stripHeader(await getText(path));
+      docs.push({ id: `T:${ds.id}:${f.name}`, dataset: ds.id, kind: 'text', title, date, url: path, source: f.source || '', text });
     }
   }
   return { series, docs };
@@ -219,10 +222,10 @@ function renderDatasets() {
     const status = !m ? '<span class="pill">Not downloaded</span>'
       : m.okCount ? `<span class="pill ok">Downloaded ${esc(m.downloadedAt.replace('T', ' ').slice(0, 16))}</span> <span class="muted">${m.okCount} file${m.okCount > 1 ? 's' : ''} · ${kb(bytes)}${n ? ` · ${n.toLocaleString()} docs in universe` : ''}</span>`
       : '<span class="pill warn">Nothing downloaded</span>';
-    const items = ds.series || ds.indicators || ds.managers;
+    const items = ds.series || ds.indicators || ds.managers || ds.include?.map((i) => ({ id: i.date || 'undated', title: i.title }));
     return `<article class="ds" data-id="${ds.id}">
       <div class="ds-top"><div><strong>${esc(ds.name)}</strong><div class="muted">${esc(ds.publisher)}${ds.homepage ? ` · <a href="${esc(ds.homepage)}" target="_blank" rel="noopener">source</a>` : ''}</div></div>
-      <button class="secondary small" data-download="${ds.id}" ${state.busy || blocked ? 'disabled' : ''}>${ds.type === 'local' ? 'Scan folder' : m ? 'Update' : 'Download'}</button></div>
+      <button class="secondary small" data-download="${ds.id}" ${state.busy || blocked ? 'disabled' : ''}>${ds.type === 'local' ? (ds.include ? (m ? 'Reload' : 'Load') : 'Scan folder') : m ? 'Update' : 'Download'}</button></div>
       <p>${esc(ds.description)}</p>
       ${items ? `<p class="series">${items.map((s) => `<span title="${esc(s.title || s.name)}">${esc(s.id || s.cik)}${s.title ? '' : ` ${esc(s.name)}`}</span>`).join('')}</p>` : ''}
       <div class="ds-status">${status}</div>
@@ -255,7 +258,7 @@ async function download(id) {
 async function downloadAll() {
   const ua = state.status.settings.secUserAgent;
   for (const ds of state.catalog.datasets) {
-    if (ds.type === 'local' || (ds.type === 'sec13f' && !ua)) continue;
+    if ((ds.type === 'local' && !ds.include) || (ds.type === 'sec13f' && !ua)) continue;   // your own folder is scanned on request; curated sets load with the rest
     await download(ds.id);
   }
 }

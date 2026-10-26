@@ -101,12 +101,21 @@ function Invoke-Download($ds) {
       }
     }
     'local' {
-      $src = Join-Path $here $ds.folder
+      # A folder inside the project. With an "include" list only those files are added, each with its own title, date and source link.
+      $src = [IO.Path]::GetFullPath((Join-Path $here $ds.folder))
+      if (-not $src.StartsWith($root)) { $err = 'The folder must be inside the project.'; break }
       New-Item -ItemType Directory -Force $src | Out-Null
-      Get-ChildItem $src -File -Recurse | Where-Object { $_.Extension -match '^\.(pdf|txt|md|html?|csv)$' } | ForEach-Object {
-        $rel = $_.FullName.Substring($here.Length + 1) -replace '\\', '/'
-        [void]$files.Add([ordered]@{ name = $_.Name; path = $rel; ok = $true; status = 'local'; bytes = $_.Length })
+      $meta = @{}
+      foreach ($i in @($ds.include)) { if ($i) { $meta["$($i.file)"] = $i } }
+      Get-ChildItem $src -File -Recurse | Where-Object { $_.Extension -match '^\.(pdf|txt|md|html?|csv)$' -and (-not $meta.Count -or $meta.ContainsKey($_.Name)) } | ForEach-Object {
+        # Paths are relative to /Universe/ (the page), so a folder elsewhere in the project starts with ../
+        $rel = if ($_.FullName.StartsWith($here + '\')) { $_.FullName.Substring($here.Length + 1) -replace '\\', '/' } else { '../' + ($_.FullName.Substring($root.Length + 1) -replace '\\', '/') }
+        $row = [ordered]@{ name = $_.Name; path = $rel; ok = $true; status = 'local'; bytes = $_.Length }
+        $m = $meta[$_.Name]
+        if ($m) { $row['title'] = "$($m.title)"; $row['date'] = "$($m.date)"; $row['source'] = "$($m.source)"; $row['doctype'] = "$($m.doctype)" }
+        [void]$files.Add($row)
       }
+      foreach ($k in $meta.Keys) { if (-not (@($files | Where-Object { $_.name -eq $k }).Count)) { [void]$files.Add([ordered]@{ name = $k; ok = $false; status = 'missing' }) } }
       if (-not $files.Count) { $err = "No files yet. Add .pdf, .txt, .md, .html or .csv files to Universe\$($ds.folder), then scan again." }
     }
   }
