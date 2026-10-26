@@ -11,7 +11,7 @@
 | Time | On screen | Section |
 |---|---|---|
 | 0:00 – 0:22 | The logo, then the sidebar | The problem |
-| 0:22 – 0:48 | Datasets tab (the list of 14 public datasets) | Why I built it |
+| 0:22 – 0:48 | Datasets tab (the list of 15 datasets, Fisher first) | Why I built it |
 | 0:48 – 1:50 | Build & train tab, then Ask tab (a live question, the clarifying card, the conclusion window, the reasoning tree) | The product |
 | 1:50 – 2:43 | Back to the Ask tab; hold on the conclusion window | Limitations |
 | 2:43 – 2:57 | The logo again | Next step |
@@ -30,9 +30,9 @@ So I built Data Universe. A junior asks a question and gets the evidence ranked,
 
 **[0:48 – 1:50] The product** *(screen: Build & train, then Ask)*
 
-Step one loads fifteen public datasets on my computer: Fed and FRED data, Shiller valuations, FOMC statements, Berkshire letters, SEC 13F filings, and Fisher's own published commentary and filings. Step two builds a searchable universe of about thirty-five hundred documents and trains the ranking. Eighty percent of auto-generated questions tune it; twenty percent are held back to test it. On those unseen questions, the right source in the top three went from eighty-four to ninety-three percent.
+First, it loads fifteen public datasets on my computer: Fed and FRED data, Shiller valuations, FOMC statements, Berkshire letters, SEC 13F filings, and Fisher's own published commentary and filings. Second, it builds a searchable universe of about thirty-five hundred documents and trains the ranking. Eighty percent of auto-generated questions tune it; twenty percent are held back to test it. On those unseen questions, the right source in the top three went from eighty-four to ninety-three percent.
 
-Step three: I ask a question. If it's broad, the app asks clarifying questions first, to narrow the scope. Then I get at least three ranked options, and a conclusion written by an open-source model, with numbered citations that open the exact passage. This tree shows how the answer was reached: the scope, the search, the entries the model read, and which ones it actually cited. If it cites nothing, the app marks the answer low confidence.
+Then I ask a question. If it's broad, the app asks clarifying questions first, to narrow the scope. Then I get at least three ranked options, and a conclusion written by an open-source model, with numbered citations that open the exact passage. This tree shows how the answer was reached: the scope, the search, the entries the model read, and which ones it actually cited. If it cites nothing, the app marks the answer low confidence.
 
 **[1:50 – 2:43] Limitations** *(screen: conclusion window)*
 
