@@ -381,11 +381,11 @@ function resultsHtml(m) {
   return `<div class="res-head"><div>
       <div class="res-title"><span class="label">Results · Hold-Out Benchmark</span><span class="badge ${lift1 > 0 ? 'pos' : ''}">${lift1 > 0 ? '+' : ''}${lift1} pts Recall@1 lift</span></div>
       <p class="mono-line">Trained ${esc(new Date(m.trainedAt).toLocaleString())} · ${m.sizes.total} auto-generated questions → <b>${m.sizes.train} train (80%)</b> / <b>${m.sizes.test} test (20%)</b> · ${m.combos} settings tried.</p></div>
-      ${top1 >= 0.75 ? '<button class="secondary small" type="button" data-go="ask">Test in 3 · Ask →</button>' : ''}</div>
+      ${top1 >= 0.75 ? '<button class="secondary small" type="button" data-go="ask">Test in 1 · Ask →</button>' : ''}</div>
     <div class="best"><span class="label">Winning weights</span>${PARAM_INFO.map((p) => `<span class="cfg" title="${esc(p.desc)}">${p.key === 'k1' ? 'k1' : p.key === 'b' ? 'b' : p.key === 'titleBoost' ? 'title_boost' : 'year_boost'}=${m.params[p.key]}</span>`).join('')}</div>
     <div class="res-wrap"><table class="res-table"><thead><tr><th>Held-out test (20%)</th><th class="r">Before</th><th>After training</th><th class="r col-train">Train (80%)</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted small-text">Pin = score before training. Click a metric to see it by document type; groups with fewer than 10 held-out questions are indicative only.</p>
-    <div class="res-foot"><p>The tuned weights are saved and used by Step 3. Scores come from auto-generated questions, so they measure finding the right source, not answer quality.</p><button class="primary" type="button" data-go="ask">Proceed to 3 · Ask with Tuned Weights →</button></div>
+    <div class="res-foot"><p>The tuned weights are saved and used by Step 1 (Ask). Scores come from auto-generated questions, so they measure finding the right source, not answer quality.</p><button class="primary" type="button" data-go="ask">Proceed to 1 · Ask with Tuned Weights →</button></div>
     <details><summary>Sample held-out questions</summary><ul class="files">${m.examples.map((e) => `<li>${esc(e.q)} <span class="muted">→ ${esc(e.gold)}</span></li>`).join('')}</ul></details>`;
 }
 
@@ -427,7 +427,7 @@ function renderTrain() {
 /** Completion dots on the step tabs: data downloaded, universe built and tuned, a question asked. */
 function renderNav() {
   const done = { datasets: state.catalog.datasets.some((d) => okFiles(d).length), train: !!(state.index && state.model && !state.stale), ask: state.asked };
-  const names = { datasets: '01 Datasets', train: '02 Build & train', ask: '03 Ask' };
+  const names = { ask: '01 Ask', datasets: '02 Datasets', train: '03 Build & train' };
   document.querySelectorAll('.tabs [data-tab]').forEach((b) => {
     const d = !!done[b.dataset.tab];
     b.dataset.done = String(d);
@@ -901,7 +901,6 @@ function renderAnswers(question, r) {
 function setTab(tab) {
   document.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.tab === tab)));
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('hidden', v.id !== `view-${tab}`));
-  try { localStorage.setItem('universe-tab', tab); } catch {}
 }
 
 function renderAll() { renderDatasets(); renderSettings(); renderTrain(); renderAskMode(); renderNav(); }
@@ -911,9 +910,8 @@ async function init() {
   await refreshStatus();
   if (state.status.index['docs.json']) { try { await loadUniverse(); } catch (e) { console.error(e); } }
   renderAll();
-  let tab = state.index ? 'ask' : 'datasets';
-  try { tab = localStorage.getItem('universe-tab') || tab; } catch {}
-  setTab(tab);
+  // Ask comes first. With nothing built yet there is nothing to ask, so start on Datasets instead.
+  setTab(state.index ? 'ask' : 'datasets');
   document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
   // Animated nebula behind the panels. It follows the system "reduce motion" setting unless the sidebar switch was used.
   let motion = !matchMedia('(prefers-reduced-motion: reduce)').matches;

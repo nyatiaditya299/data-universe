@@ -126,7 +126,8 @@ export function startNebula(canvas, { theme = 'dark', motion = true } = {}) {
 
   function run() {
     cancelAnimationFrame(raf);
-    if (motion) { last = performance.now(); raf = requestAnimationFrame(tick); } else draw(20, 0);
+    draw(20, 0);   // paint at once, so the canvas is never black while waiting for the first animation frame
+    if (motion) { last = performance.now(); raf = requestAnimationFrame(tick); }
   }
 
   let resizeTimer = 0;

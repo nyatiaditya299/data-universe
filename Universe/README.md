@@ -16,6 +16,8 @@ Open <http://localhost:8010/Universe/>. Internet access is needed for downloads 
 2. **Build & train:** *Build universe* parses everything into documents (`data\_index\docs.json`, `series.json`). *Train ranking* runs the 80/20 tuning and saves `data\_index\model.json`.
 3. **Ask:** type a question. Without an API key you get ranked search results; with a Claude API key (Settings) a Claude agent searches the universe with tools and writes the options.
 
+The sidebar lists **Ask first (01), then Datasets (02), then Build & train (03)**. The page opens on Ask once a universe is built; on first use it opens on Datasets, and you work through Datasets, then Build & train, then Ask.
+
 Tests: <http://localhost:8010/Universe/run-tests.html> (16 tests of the core logic).
 
 ## Datasets (catalog.json)
@@ -73,8 +75,8 @@ Built to `data_universe_ui_upgrade_specification.md` (Editorial Quantitative / I
 - **Themes**: *Editorial Quant Light* (default if the system is light) and *PRISM Dark Obsidian*. The toggle in the top bar follows the system setting on first visit and remembers your choice in the browser.
 - **Fonts**: Newsreader (headings), Inter (interface), JetBrains Mono (every number, with tabular figures). They load from Google Fonts; offline, the page falls back to Georgia, system sans and Consolas.
 - **Top bar**: completion dots on each step (data downloaded · universe built and tuned · a question asked), monospace step numbers, a pulsing *Local Engine · Public Data Only* indicator, and a `Local` chip.
-- **Step 2**: a status pill (index status, last trained) in the header; Card A with a 3-column telemetry strip, ingestion pipelines with live document counts, and index size; Card B with the 80/20 split bar showing question counts, the four tuned parameters with their search ranges and winning values, and a live `n/256 evaluated` counter while training runs; a results panel with before/after delta bars, lift badges, a winning-weights banner and a button on to Step 3. Click a metric to see it by document type (macro and market fact sheets, letters and statements, 13F filings).
-- **Steps 1 and 3** use the same tokens, header format (`Step 0N // …`) and status pill.
+- **Build & train (step 3 in the sidebar)**: a status pill (index status, last trained) in the header; Card A with a 3-column telemetry strip, ingestion pipelines with live document counts, and index size; Card B with the 80/20 split bar showing question counts, the four tuned parameters with their search ranges and winning values, and a live `n/256 evaluated` counter while training runs; a results panel with before/after delta bars, lift badges, a winning-weights banner and a button on to Ask (step 1). Click a metric to see it by document type (macro and market fact sheets, letters and statements, 13F filings).
+- **Ask and Datasets (steps 1 and 2)** use the same tokens, header format (`Step 0N // …`) and status pill.
 - **Phones**: one column, no sideways scroll; the results table restacks so each metric keeps its bar and badge.
 
 Where the specification used placeholder figures, the page shows live ones: the version chip is just `Local` (there is no version number), index size is measured from the saved index, the winning weights come from the last training run, and lifts are in percentage points (`+18 pts`) rather than `%`. Additions beyond the spec: a World Bank pipeline row, an MRR row, a per-type breakdown flagged *indicative only* when it rests on fewer than 10 questions, and a manual dark/light toggle that is kept between visits.
