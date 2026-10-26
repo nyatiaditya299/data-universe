@@ -5,6 +5,15 @@
 **Context:** AI in Finance Week 2026 competition. Per [AI_Finance_Week_2026_Beta_Handover.md](AI_Finance_Week_2026_Beta_Handover.md), the submission deadline is **Monday 26 October 2026, 11:59 PM**.
 **Status:** working local dashboard. Conclusions now run **live with no key** on the free hosted open-weight model GPT-OSS 20B (via Pollinations) and appear in a dedicated conclusion window on the Ask tab. Verified with real questions on 26 Oct.
 
+### 26 Oct update: Fisher Investments public documents added to the universe
+- Asked by the owner: add the publicly available documents Fisher Investments posted to the searchable universe, since Fisher is the focus company.
+- **Added** a "Focus company: Fisher Investments" dataset (first in the Datasets tab): 3 dated commentary articles (2020-03-27 stimulus, 2022-09-13 CPI, 2023-03-16 regional banks), the top-down investment process page, the Form CRS/ADV disclosure page, Form CRS (2026-02-11) and Form ADV Part 2A (2026-02-11, the SEC PDF). Each has its real title, date and source link. Universe is now **3,487 documents, 6,109 passages**. The 13F holdings for Fisher were already in the universe and are unchanged.
+- **Source files were wrong and are now fixed.** `2020-03-27-fisher-stimulus.md` and `2022-09-13-fisher-cpi.md` actually held SEC 13F holdings text, `Fisher_disclosure_page.md` an EDGAR filing page, and the regional-banks and process files only site menus. Fisher's website returns HTTP 403 to command-line downloads, so I read the five real pages in a browser and rewrote the files (text only; tables, charts and bullet lists on the pages are not captured). The Beta README had flagged the first three; it is updated.
+- **How it works**: a curated "local" dataset (`include` list in `catalog.json`, loaded by `serve.ps1` from `Source_Documents/Fisher_Investments`; the button says *Load*). The server must be restarted to pick up the new `serve.ps1`.
+- **Checks**: scan found 7 of 7 files; every Fisher question I tried ranks the right document first (top-down process, regional banks, CPI, advisory fees, COVID stimulus), and the existing questions (13F buys and sells, FOMC, CAPE, Buffett) are unchanged. "What is Fisher Investments' top-down investment process?" gave a conclusion citing the process page (medium confidence). Retrained: right source in top 3 **84% → 93%**, first **73% → 83%** on 81 held-out questions. 27 tests pass.
+- **Still open**: the Beta's replay-case "reveal" summaries (in `Beta/index.html`) were written without the article text; check them against the corrected files. The GitHub repository still has the old, wrong files until the changes are pushed. The AI log and video script were updated to the new figures.
+- **Copyright note**: these are full text copies of Fisher's public pages. Fine for local research in a private repository; before making the repository public, consider keeping only the links and short excerpts.
+
 ### 26 Oct update: sidebar, nebula background, logo, reasoning-trace tree
 - Asked by the owner: (1) a graphical thinking tree on the Ask tab showing how the model approached the answer; (2) Datasets, Build and Ask as a sidebar; (3) a dynamic visual background on the theme of "data universe", with nebula colours reflected in slightly transparent front panels; (4) a logo in place of the plain name.
 - **Done**: new files `nebula.mjs`, `logo-mark.svg`, `logo.svg`; `index.html` and `universe-ui.mjs` changed. See the README section "Sidebar, nebula background, logo and reasoning trace".
@@ -53,6 +62,7 @@
 9. The chatbot should **ask clarifying questions** to narrow the scope and make answers more precise. Done (see the 26 Oct update).
 10. Redesign the **UI** to the PRISM-grade specification. Done (see the 26 Oct update); next: take screenshots of both themes for the deliverable.
 11. Sidebar navigation, nebula background with glass panels, a logo, and a **reasoning-trace tree** on the Ask tab. Done (see the 26 Oct update).
+12. Add the publicly available documents Fisher Investments posted to the searchable universe (focus company). Done (see the 26 Oct update); the source files were found wrong and fixed.
 
 ## 2. How to run it
 
@@ -111,11 +121,12 @@ Universe/
 | Berkshire letters 2000–2025 (26 PDFs) | ✅ |
 | World Bank macro (8 economies × 4 indicators) | ✅ |
 | SEC 13F, Fisher Investments + Berkshire, last 4 quarters | ✅ verified: Berkshire Q2 2026 total of $299.25B matches the raw filing; Fisher ≈1,037 positions, $335.8B |
+| **Fisher Investments public documents** (focus company) | ✅ 7 documents: 3 dated commentary articles, top-down process, disclosure page, Form CRS, Form ADV Part 2A (read from `Source_Documents/Fisher_Investments`) |
 | Your documents (`my-docs`) | empty |
 | IMF DataMapper, AAII sentiment | ❌ block automated downloads (HTTP 403) |
 | Bank outlooks (JPM, Vanguard, BlackRock) | save by hand into `my-docs` (URLs change; reuse terms) |
 
-Built universe: **3,480 documents, 5,984 passages, 77 time series** (5,997 before the FOMC press-tail fix on 26 Oct).
+Built universe: **3,487 documents, 6,109 passages, 77 time series** (3,480 documents and 5,984 passages before the Fisher documents were added on 26 Oct).
 
 ## 6. How it works
 
@@ -132,17 +143,17 @@ Built universe: **3,480 documents, 5,984 passages, 77 time series** (5,997 befor
 3. Grid search over 256 settings on the 80%.
 4. Score on the held-out 20%.
 
-Latest run (26 Oct 2026, after the FOMC fix): 403 questions (322 train / 81 test), 256 settings tried. On the held-out 20%:
+Latest run (26 Oct 2026, after adding the Fisher documents): 407 questions (326 train / 81 test), 256 settings tried. On the held-out 20%:
 
 | Measure | Before training | After training | Previous run (25 Oct) |
 |---|---|---|---|
-| Right source in top 3 | 77% | **91%** | 90% |
-| Ranked #1 | 62% | **80%** | 79% |
-| Mean reciprocal rank | 0.70 | **0.87** | 0.85 |
+| Right source in top 3 | 84% | **93%** | 91% (77% untrained) |
+| Ranked #1 | 73% | **83%** | 80% (62% untrained) |
+| Mean reciprocal rank | 0.79 | **0.88** | 0.87 (0.70 untrained) |
 
-Chosen settings: k1 1.2, b 0.4, title boost 2, year boost 1 (previously k1 0.9, title boost 1). Train-set top 3 is 94%, close to the test score, so no sign of overfitting.
+Chosen settings: k1 0.9, b 0.4, title boost 1, year boost 1 (previously k1 1.2, title boost 2). Train-set top 3 is 91%, close to the test score, so no sign of overfitting. The "previous run" column is the run before the Fisher documents; the untrained baseline moved because 4 of the questions are new.
 
-By question type (held-out top 3, before → after): series overview 42% → 84%; series by year 100% → 100%; cross-country year 94% → 100%; text passages 71% → 71%; 13F holdings and buys/sells 2 questions each, too few to read much into. Text passages are the weakest type and did not improve with tuning.
+By question type (held-out top 3, before → after): macro and market fact sheets (64 questions) 86% → 94%; letters and statements, including the Fisher documents (14 questions) 86% → 86%; 13F filings (3 questions, indicative only) 33% → 100%. Tuning helps the structured data most and does not improve the text documents.
 
 After retraining, the FOMC 2023 inflation and Shiller CAPE questions still retrieve the right sources.
 
