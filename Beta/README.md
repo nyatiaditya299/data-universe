@@ -52,14 +52,13 @@ Files:
 - **Local server**: no model is reachable, so the page uses extractive mode and keeps uploads in this browser only. The retrieval, as-of filter, and checks are identical.
 
 ### Starter library (7 documents, 48 passages)
-CARES Act record, BLS August 2022 CPI release, FDIC SVB and Signature releases, Fed BTFP release, Fisher's top-down process page, Fisher Form CRS. **The three Fisher commentary articles are not included** (see source issues below); add them through the upload panel:
+CARES Act record, BLS August 2022 CPI release, FDIC SVB and Signature releases, Fed BTFP release, Fisher's top-down process page, Fisher Form CRS. **The three Fisher commentary articles are not included in the starter library** (the source files were wrong on Oct 25 and were fixed on Oct 26; see below). Add them through the upload panel, using the corrected files in `Source_Documents/Fisher_Investments`:
 1. Open each article in a browser and save it as a web page (.html) or copy its text.
 2. In *Ask the archive*, add it with its publish date (2020-03-27, 2022-09-13, 2023-03-16) and type *Firm commentary*.
 
-## Source bundle issues found (Oct 25)
-- `Source_Documents/Fisher_Investments/2020-03-27-fisher-stimulus.md` and `2022-09-13-fisher-cpi.md` contain SEC 13F holdings text, not the Fisher articles their names suggest.
-- `2023-03-16-fisher-regional-banks.md` holds only the headline and site menus; the article body is missing.
-- The replay-case "reveal" summaries were written without the article text in the bundle; check them against the live articles before presenting.
+## Source bundle issues found (Oct 25), fixed (Oct 26)
+- On Oct 25, `Source_Documents/Fisher_Investments/2020-03-27-fisher-stimulus.md` and `2022-09-13-fisher-cpi.md` held SEC 13F holdings text, not the Fisher articles their names suggest, and `2023-03-16-fisher-regional-banks.md` held only the headline and site menus. On Oct 26 all three were replaced with the real article text, read from Fisher's public pages (the top-down process page and the disclosure page were replaced too). The Data Universe dashboard now loads them as its focus-company dataset.
+- Still open: the replay-case "reveal" summaries were written without the article text in the bundle. Check them against the corrected files before presenting.
 
 ## Current limitations
 - Retrieval is keyword-based (BM25), not semantic embeddings, so a question must share words with the passage. It is transparent and runs fully in the browser.
